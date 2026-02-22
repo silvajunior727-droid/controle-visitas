@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Visitas - Arlinda Batista Passos</title>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e2e8f0; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* TELA DE LOGIN */
+        #tela-login { display: flex; align-items: center; justify-content: center; height: 100vh; width: 100%; padding: 20px; }
+        .cartao-login { background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 400px; }
+        .cartao-login h2 { color: #2c3e50; margin-bottom: 5px; }
+        .cartao-login p { color: #7f8c8d; margin-bottom: 25px; font-size: 14px; }
+        .input-grupo { margin-bottom: 15px; }
+        .input-grupo input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
+        
+        button { width: 100%; padding: 12px; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; background-color: #3498db; box-shadow: 0 5px #2980b9; transition: all 0.1s; margin-bottom: 10px; }
+        button:active { box-shadow: 0 2px #2980b9; transform: translateY(3px); }
+        #mensagem-erro { color: #e74c3c; margin-top: 15px; display: none; font-weight: bold; }
+
+        /* TELA DO PAINEL */
+        #tela-painel { display: none; padding: 20px; max-width: 1200px; margin: 0 auto; width: 100%; }
+        
+        /* Cabeçalho */
+        .cabecalho-paciente { display: flex; align-items: center; background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .foto-container { width: 90px; height: 90px; border-radius: 50%; overflow: hidden; border: 4px solid #3498db; margin-right: 20px; background-color: #ecf0f1; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .foto-paciente { width: 100%; height: 100%; object-fit: cover; }
+        .info-paciente { flex-grow: 1; }
+        .info-paciente h2 { color: #2c3e50; font-size: 24px; }
+        .info-paciente p { color: #7f8c8d; font-size: 16px; margin-top: 5px; }
+        .btn-sair { background-color: #e74c3c; box-shadow: 0 5px #c0392b; width: auto; padding: 10px 25px; margin-left: 15px; margin-bottom: 0; }
+        .btn-sair:active { box-shadow: 0 2px #c0392b; }
+
+        /* Grade Semanal */
+        .semana-container { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .semana-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: #2c3e50; flex-wrap: wrap; gap: 10px; }
+        .grade-dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+        .dia-coluna { display: flex; flex-direction: column; gap: 10px; }
+        .dia-titulo { text-align: center; font-weight: bold; color: #34495e; padding-bottom: 5px; border-bottom: 2px solid #ecf0f1; font-size: 14px; }
+        .dia-titulo span { display: block; font-size: 12px; color: #7f8c8d; font-weight: normal; }
+        
+        .turno-bloco { padding: 15px 5px; border-radius: 8px; text-align: center; font-weight: bold; color: white; cursor: pointer; font-size: 14px; box-shadow: 0 5px rgba(0,0,0,0.3); transition: all 0.1s; display: flex; flex-direction: column; justify-content: flex-start; min-height: 120px; }
+        .turno-bloco:active { box-shadow: 0 2px rgba(0,0,0,0.3); transform: translateY(3px); }
+        .turno-bloco span.horario { font-size: 11px; margin-top: 2px; font-weight: normal; }
+        .turno-bloco span.contador { font-size: 12px; margin-top: 8px; background: rgba(0,0,0,0.2); padding: 3px; border-radius: 4px; margin-bottom: 8px;}
+        .lista-visitas-bloco { font-size: 11px; text-align: left; background: rgba(0,0,0,0.15); padding: 5px; border-radius: 4px; font-weight: normal; line-height: 1.4; flex-grow: 1;}
+        .lista-visitas-bloco div { border-bottom: 1px dashed rgba(255,255,255,0.3); padding-bottom: 2px; margin-bottom: 2px; }
+        .lista-visitas-bloco div:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+        .cor-verde-dia { background-color: #2ecc71 !important; } 
+        .cor-verde-noite { background-color: #16a085 !important; } 
+        .cor-amarelo { background-color: #f1c40f !important; color: #333 !important; } 
+        .cor-laranja { background-color: #e67e22 !important; } 
+        .cor-vermelho { background-color: #e74c3c !important; border: 2px solid #c0392b;} 
+
+        /* Observações e Botões do Rodapé */
+        .observacoes-container { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .observacoes-container h3 { color: #2c3e50; margin-bottom: 10px; }
+        textarea { width: 100%; height: 120px; padding: 12px; border: 1px solid #ccc; border-radius: 6px; resize: none; font-family: inherit; margin-bottom: 15px; }
+        
+        .botoes-rodape { display: flex; gap: 15px; flex-wrap: wrap; }
+        .botoes-rodape button { flex: 1; margin-bottom: 0; min-width: 200px; } 
+        .btn-relatorio { background-color: #9b59b6; box-shadow: 0 5px #8e44ad; }
+        .btn-relatorio:active { box-shadow: 0 2px #8e44ad; }
+        
+        .btn-whatsapp { background-color: #25D366; box-shadow: 0 5px #128C7E; }
+        .btn-whatsapp:active { box-shadow: 0 2px #128C7E; }
+
+        /* JANELA MODAL */
+        #modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; padding: 10px; }
+        .modal-conteudo { background: white; padding: 25px; border-radius: 12px; width: 100%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+        .modal-conteudo h3 { color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; margin-bottom: 15px; text-align: center; }
+        .slot-visita { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6; margin-bottom: 10px; }
+        .slot-visita label { font-size: 13px; font-weight: bold; color: #34495e; display: block; margin-bottom: 5px; }
+        .slot-visita input[type="text"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; margin-bottom: 8px; }
+        .linha-horario { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #7f8c8d; }
+        .linha-horario input[type="time"] { padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; flex: 1; text-align: center; }
+        .modal-botoes { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-salvar { background-color: #2ecc71; box-shadow: 0 5px #27ae60; flex: 1; margin-bottom: 0; } 
+        .btn-salvar:active { box-shadow: 0 2px #27ae60; }
+        .btn-cancelar { background-color: #95a5a6; box-shadow: 0 5px #7f8c8d; flex: 1; margin-bottom: 0;} 
+        .btn-cancelar:active { box-shadow: 0 2px #7f8c8d; }
+
+        /* TELA DE RELATÓRIO */
+        #tela-relatorio { 
+            display: none; 
+            padding: 40px; 
+            background: white; 
+            width: 98%; 
+            max-width: 1400px; 
+            margin: 20px auto; 
+            align-self: center; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+            border-radius: 12px;
+        }
+        
+        .botoes-relatorio { display: flex; gap: 15px; margin-bottom: 30px; width: 100%; justify-content: center; }
+        .btn-voltar-suave { background-color: #a29bfe; box-shadow: 0 5px #6c5ce7; flex: 1; max-width: 300px; color: white; margin-bottom: 0; }
+        .btn-voltar-suave:active { box-shadow: 0 2px #6c5ce7; }
+        .btn-imprimir-suave { background-color: #74b9ff; box-shadow: 0 5px #0984e3; flex: 1; max-width: 300px; color: white; margin-bottom: 0; }
+        .btn-imprimir-suave:active { box-shadow: 0 2px #0984e3; }
+
+        .relatorio-cabecalho { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; }
+        .relatorio-cabecalho h1 { color: #2c3e50; }
+        
+        .tabela-wrapper { width: 100%; overflow-x: auto; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .tabela-relatorio { width: 100%; min-width: 600px; border-collapse: collapse; }
+        .tabela-relatorio th, .tabela-relatorio td { border: 1px solid #bdc3c7; padding: 12px; text-align: left; vertical-align: top;}
+        .tabela-relatorio th { background-color: #ecf0f1; color: #2c3e50; }
+        .obs-relatorio { background: #f9f9f9; padding: 20px; border-left: 5px solid #3498db; border-radius: 0 8px 8px 0; }
+
+        @media (max-width: 768px) {
+            .cabecalho-paciente { flex-direction: column; text-align: center; }
+            .foto-container { margin: 0 auto 15px auto; }
+            .btn-sair { margin: 15px auto 0 auto; width: 100%; }
+            .grade-dias { grid-template-columns: 1fr; }
+            #tela-painel { padding: 10px; }
+            .semana-container, .observacoes-container, .cabecalho-paciente { padding: 15px; }
+            .botoes-rodape { flex-direction: column; gap: 10px; }
+            .botoes-rodape button { width: 100%; }
+            
+            #tela-relatorio { padding: 15px; margin: 0; width: 100%; max-width: 100%; border-radius: 0; align-self: stretch; }
+            .botoes-relatorio { flex-direction: column; align-items: center; }
+            .btn-voltar-suave, .btn-imprimir-suave { max-width: 100%; width: 100%; }
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; margin: 0; padding: 0; }
+            #tela-relatorio { padding: 0; margin: 0; width: 100%; max-width: 100%; box-shadow: none; border-radius: 0; display: block !important; align-self: stretch; }
+            #tela-painel, #tela-login, #modal-overlay { display: none !important; }
+            .tabela-wrapper { overflow-x: visible; box-shadow: none; }
+            .tabela-relatorio { min-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="tela-login">
+        <div class="cartao-login">
+            <h2>Controle de Visitas</h2>
+            <p>Paciente: Arlinda Batista Passos</p>
+            <div class="input-grupo"><input type="text" id="nome-visitante" placeholder="Seu Nome (Visitante)" required></div>
+            <div class="input-grupo"><input type="password" id="senha-acesso" placeholder="Senha de Acesso" required></div>
+            <button onclick="fazerLogin()">Entrar</button>
+            <p id="mensagem-erro">Senha incorreta ou nome em branco!</p>
+        </div>
+    </div>
+
+    <div id="tela-painel">
+        <div class="cabecalho-paciente">
+            <div class="foto-container">
+                <img src="mae.jpg" alt="Foto Dona Arlinda" class="foto-paciente" onerror="this.src='https://via.placeholder.com/90?text=Sem+Foto'">
+            </div>
+            <div class="info-paciente">
+                <h2>Arlinda Batista Passos</h2>
+                <p><strong>Andar:</strong> 6º | <strong>Leito:</strong> 601</p>
+            </div>
+            <button class="btn-sair" onclick="sairDoSistema()">Sair</button>
+        </div>
+
+        <div class="semana-container">
+            <div class="semana-header">
+                <h3>Monitoramento ao Vivo</h3>
+                <p><strong>Exibindo:</strong> Hoje e próximos 6 dias</p>
+            </div>
+            <div class="grade-dias" id="grade-dias"></div>
+        </div>
+
+        <div class="observacoes-container">
+            <h3>Recomendações Médicas e Novidades</h3>
+            <textarea id="texto-observacoes" placeholder="Ex: A médica passou às 10h..."></textarea>
+            
+            <div class="botoes-rodape">
+                <button onclick="salvarObservacao()">Salvar Observação</button>
+                <button class="btn-relatorio" onclick="abrirRelatorio()">Gerar Relatório</button>
+                <button class="btn-whatsapp" onclick="enviarWhatsApp()">Enviar no WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tela-relatorio">
+        <div class="no-print botoes-relatorio">
+            <button class="btn-voltar-suave" onclick="fecharRelatorio()">Voltar ao Painel</button>
+            <button class="btn-imprimir-suave" onclick="window.print()">Imprimir / Salvar PDF</button>
+        </div>
+        
+        <div class="relatorio-cabecalho">
+            <h1>Relatório de Visitas e Recomendações</h1>
+            <p>Paciente: <strong>Arlinda Batista Passos</strong> | Andar: 6º | Leito: 601</p>
+            <p>Gerado em: <span id="data-geracao-relatorio"></span></p>
+        </div>
+
+        <h3>Quadro de Visitas</h3>
+        <div class="tabela-wrapper">
+            <table class="tabela-relatorio">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">Dia</th>
+                        <th style="width: 40%;">Turno Diurno (08h às 20h)</th>
+                        <th style="width: 40%;">Turno Noturno (20h às 08h)</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-tabela-relatorio"></tbody>
+            </table>
+        </div>
+
+        <h3>Observações e Recomendações Médicas</h3>
+        <div class="obs-relatorio" id="obs-relatorio-texto"></div>
+    </div>
+
+    <div id="modal-overlay">
+        <div class="modal-conteudo">
+            <h3 id="modal-titulo">Visitas</h3>
+            <div class="slot-visita"><label>Vaga 1</label><input type="text" id="nome-vaga-1" placeholder="Nome do Visitante"><div class="linha-horario">Das <input type="time" id="inicio-vaga-1"> às <input type="time" id="fim-vaga-1"></div></div>
+            <div class="slot-visita"><label>Vaga 2</label><input type="text" id="nome-vaga-2" placeholder="Nome do Visitante"><div class="linha-horario">Das <input type="time" id="inicio-vaga-2"> às <input type="time" id="fim-vaga-2"></div></div>
+            <div class="slot-visita"><label>Vaga 3</label><input type="text" id="nome-vaga-3" placeholder="Nome do Visitante"><div class="linha-horario">Das <input type="time" id="inicio-vaga-3"> às <input type="time" id="fim-vaga-3"></div></div>
+            <div class="modal-botoes">
+                <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+                <button class="btn-salvar" onclick="salvarVisitas()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let diaEdicao = '';
+        let turnoEdicao = '';
+        let diasAtivos = []; 
+
+        function fazerLogin() {
+            const nomeDigitado = document.getElementById('nome-visitante').value;
+            const senhaDigitada = document.getElementById('senha-acesso').value;
+            if (senhaDigitada === '6-601' && nomeDigitado.trim() !== '') {
+                localStorage.setItem('visitanteAtual', nomeDigitado);
+                document.getElementById('tela-login').style.display = 'none';
+                document.getElementById('tela-painel').style.display = 'block';
+                carregarPainel();
+                setInterval(gerarDiasDaSemana, 60000); 
+            } else {
+                document.getElementById('mensagem-erro').style.display = 'block';
+            }
+        }
+
+        function sairDoSistema() {
+            document.getElementById('nome-visitante').value = '';
+            document.getElementById('senha-acesso').value = '';
+            document.getElementById('mensagem-erro').style.display = 'none';
+            document.getElementById('tela-painel').style.display = 'none';
+            document.getElementById('tela-login').style.display = 'flex';
+        }
+
+        function carregarPainel() {
+            calcularSeteDias();
+            gerarDiasDaSemana();
+            carregarObservacoes();
+        }
+
+        function calcularSeteDias() {
+            diasAtivos = [];
+            const nomesSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            for(let i = 0; i < 7; i++) {
+                let dataObj = new Date();
+                dataObj.setDate(dataObj.getDate() + i);
+                let diaSemanaNome = nomesSemana[dataObj.getDay()];
+                let dataFormatada = dataObj.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+                diasAtivos.push({
+                    idUnico: `${dataFormatada}`, 
+                    tituloPrincipal: i === 0 ? 'Hoje' : diaSemanaNome,
+                    subTitulo: dataFormatada,
+                    objetoData: dataObj
+                });
+            }
+        }
+
+        function visitaJaPassou(visita, dataDoBlocoObj) {
+            if (!visita.fim) return false;
+            let [hFim, mFim] = visita.fim.split(':').map(Number);
+            let [hIni, mIni] = (visita.inicio || "00:00").split(':').map(Number);
+            let dataHoraFim = new Date(dataDoBlocoObj.getTime());
+            if (hFim < hIni) dataHoraFim.setDate(dataHoraFim.getDate() + 1);
+            dataHoraFim.setHours(hFim, mFim, 0, 0);
+            return new Date() > dataHoraFim; 
+        }
+
+        function gerarDiasDaSemana() {
+            const gradeDias = document.getElementById('grade-dias');
+            const bancoDeDados = JSON.parse(localStorage.getItem('visitasDonaArlinda')) || {};
+            gradeDias.innerHTML = '';
+
+            diasAtivos.forEach(diaInfo => {
+                const divColuna = document.createElement('div');
+                divColuna.className = 'dia-coluna';
+                const divTitulo = document.createElement('div');
+                divTitulo.className = 'dia-titulo';
+                divTitulo.innerHTML = `${diaInfo.tituloPrincipal} <span>${diaInfo.subTitulo}</span>`;
+
+                // DIURNO
+                const listaDiurno = bancoDeDados[`${diaInfo.idUnico}-Diurno`] || [];
+                let ativosDiurno = 0;
+                let htmlVisitasDiurno = '';
+                if(listaDiurno.length > 0) {
+                    htmlVisitasDiurno = `<div class="lista-visitas-bloco">`;
+                    listaDiurno.forEach(v => { 
+                        let expirada = visitaJaPassou(v, diaInfo.objetoData);
+                        if (!expirada) ativosDiurno++;
+                        let estiloText = expirada ? 'text-decoration: line-through; opacity: 0.5;' : '';
+                        htmlVisitasDiurno += `<div style="${estiloText}"><strong>${v.nome}</strong><br>${v.inicio} às ${v.fim}</div>`; 
+                    });
+                    htmlVisitasDiurno += `</div>`;
+                }
+
+                let corDiurno = 'cor-verde-dia';
+                if (ativosDiurno === 1) corDiurno = 'cor-amarelo';
+                if (ativosDiurno === 2) corDiurno = 'cor-laranja';
+                if (ativosDiurno === 3) corDiurno = 'cor-vermelho';
+
+                const blocoDiurno = document.createElement('div');
+                blocoDiurno.className = `turno-bloco ${corDiurno}`;
+                blocoDiurno.innerHTML = `☀️ Diurno <span class="horario">08h - 20h</span> <span class="contador">${ativosDiurno}/3 Ativos</span> ${htmlVisitasDiurno}`;
+                blocoDiurno.onclick = () => abrirModal(diaInfo.idUnico, 'Diurno', diaInfo.tituloPrincipal);
+
+                // NOTURNO
+                const listaNoturno = bancoDeDados[`${diaInfo.idUnico}-Noturno`] || [];
+                let ativosNoturno = 0;
+                let htmlVisitasNoturno = '';
+                if(listaNoturno.length > 0) {
+                    htmlVisitasNoturno = `<div class="lista-visitas-bloco">`;
+                    listaNoturno.forEach(v => { 
+                        let expirada = visitaJaPassou(v, diaInfo.objetoData);
+                        if (!expirada) ativosNoturno++;
+                        let estiloText = expirada ? 'text-decoration: line-through; opacity: 0.5;' : '';
+                        htmlVisitasNoturno += `<div style="${estiloText}"><strong>${v.nome}</strong><br>${v.inicio} às ${v.fim}</div>`; 
+                    });
+                    htmlVisitasNoturno += `</div>`;
+                }
+
+                let corNoturno = 'cor-verde-noite';
+                if (ativosNoturno === 1) corNoturno = 'cor-amarelo';
+                if (ativosNoturno === 2) corNoturno = 'cor-laranja';
+                if (ativosNoturno === 3) corNoturno = 'cor-vermelho';
+
+                const blocoNoturno = document.createElement('div');
+                blocoNoturno.className = `turno-bloco ${corNoturno}`;
+                blocoNoturno.innerHTML = `🌙 Noturno <span class="horario">20h - 08h</span> <span class="contador">${ativosNoturno}/3 Ativos</span> ${htmlVisitasNoturno}`;
+                blocoNoturno.onclick = () => abrirModal(diaInfo.idUnico, 'Noturno', diaInfo.tituloPrincipal);
+
+                divColuna.appendChild(divTitulo);
+                divColuna.appendChild(blocoDiurno);
+                divColuna.appendChild(blocoNoturno);
+                gradeDias.appendChild(divColuna);
+            });
+        }
+
+        function abrirModal(idData, turno, nomeExibicao) {
+            diaEdicao = idData;
+            turnoEdicao = turno;
+            document.getElementById('modal-titulo').innerText = `${nomeExibicao} (${idData}) - ${turno}`;
+            const bancoDeDados = JSON.parse(localStorage.getItem('visitasDonaArlinda')) || {};
+            const lista = bancoDeDados[`${idData}-${turno}`] || [];
+
+            for (let i = 1; i <= 3; i++) {
+                const visita = lista[i - 1] || { nome: '', inicio: '', fim: '' };
+                document.getElementById(`nome-vaga-${i}`).value = visita.nome;
+                document.getElementById(`inicio-vaga-${i}`).value = visita.inicio || '';
+                document.getElementById(`fim-vaga-${i}`).value = visita.fim || '';
+            }
+            document.getElementById('modal-overlay').style.display = 'flex';
+        }
+
+        function fecharModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+
+        function salvarVisitas() {
+            let novaLista = [];
+            let erro = false;
+            let msgErro = "";
+
+            const bancoDeDados = JSON.parse(localStorage.getItem('visitasDonaArlinda')) || {};
+            const listaExistente = bancoDeDados[`${diaEdicao}-${turnoEdicao}`] || [];
+
+            for (let i = 1; i <= 3; i++) {
+                const nome = document.getElementById(`nome-vaga-${i}`).value.trim();
+                const inicio = document.getElementById(`inicio-vaga-${i}`).value;
+                const fim = document.getElementById(`fim-vaga-${i}`).value;
+
+                if (nome !== '') {
+                    if (!inicio || !fim) {
+                        erro = true; msgErro = `Preencha o horário de início e fim da Vaga ${i}!`; break;
+                    }
+
+                    let hIni = parseInt(inicio.split(':')[0]);
+                    let mIni = parseInt(inicio.split(':')[1]);
+                    let hFim = parseInt(fim.split(':')[0]);
+
+                    // REGRA DO PASSE LIVRE: Compara se o dado digitado é igual ao antigo
+                    let isNovoOuAlterado = true;
+                    if (listaExistente[i - 1] && 
+                        listaExistente[i - 1].nome === nome && 
+                        listaExistente[i - 1].inicio === inicio && 
+                        listaExistente[i - 1].fim === fim) {
+                        isNovoOuAlterado = false; // Dado antigo, não bloqueia
+                    }
+
+                    if (turnoEdicao === 'Diurno') {
+                        if (hIni < 8 || hIni >= 20 || hFim < 8 || hFim > 20) {
+                            erro = true; msgErro = `O turno Diurno é das 08h às 20h. Vaga ${i} incorreta!`; break;
+                        }
+                        if (inicio >= fim) {
+                            erro = true; msgErro = `A hora final deve ser maior que a inicial na Vaga ${i}!`; break;
+                        }
+                    }
+
+                    if (turnoEdicao === 'Noturno') {
+                        let iniValido = (hIni >= 20 || hIni < 8);
+                        let fimValido = (hFim >= 20 || hFim <= 8);
+                        if (!iniValido || !fimValido) {
+                            erro = true; msgErro = `O turno Noturno é das 20h às 08h. Vaga ${i} incorreta!`; break;
+                        }
+                    }
+
+                    // Verifica o horário passado APENAS se o usuário digitou/mudou a hora agora
+                    if (isNovoOuAlterado && diaEdicao === diasAtivos[0].idUnico) {
+                        let dataAgendamento = new Date();
+                        dataAgendamento.setHours(hIni, mIni, 0, 0);
+
+                        if (turnoEdicao === 'Noturno' && hIni < 8 && new Date().getHours() >= 8) {
+                            dataAgendamento.setDate(dataAgendamento.getDate() + 1);
+                        }
+
+                        if (dataAgendamento < new Date()) {
+                            erro = true; msgErro = `Atenção: A hora ${inicio} já passou! Você não pode marcar um horário retroativo na Vaga ${i}.`; break;
+                        }
+                    }
+
+                    novaLista.push({ nome: nome, inicio: inicio, fim: fim });
+                }
+            }
+
+            if (erro) {
+                alert(msgErro);
+                return; 
+            }
+
+            bancoDeDados[`${diaEdicao}-${turnoEdicao}`] = novaLista;
+            localStorage.setItem('visitasDonaArlinda', JSON.stringify(bancoDeDados));
+            fecharModal();
+            gerarDiasDaSemana();
+        }
+
+        function salvarObservacao() {
+            const texto = document.getElementById('texto-observacoes').value;
+            localStorage.setItem('obsDonaArlinda', texto);
+            alert('Observação salva!');
+        }
+
+        function carregarObservacoes() {
+            const textoSalvo = localStorage.getItem('obsDonaArlinda');
+            if (textoSalvo) document.getElementById('texto-observacoes').value = textoSalvo;
+        }
+
+        function enviarWhatsApp() {
+            const bancoDeDados = JSON.parse(localStorage.getItem('visitasDonaArlinda')) || {};
+            const hoje = diasAtivos[0].idUnico;
+            const amanha = diasAtivos[1].idUnico;
+
+            let texto = `*Visitas Dona Arlinda - Atualização*\n\n`;
+            
+            texto += `📅 *HOJE (${hoje})*\n`;
+            let hojeDiurno = bancoDeDados[`${hoje}-Diurno`] || [];
+            let hojeNoturno = bancoDeDados[`${hoje}-Noturno`] || [];
+            
+            if(hojeDiurno.length > 0) {
+                texto += `☀️ Diurno:\n`;
+                hojeDiurno.forEach(v => texto += `- ${v.nome} (${v.inicio} às ${v.fim})\n`);
+            } else { texto += `☀️ Diurno: Livre\n`; }
+            
+            if(hojeNoturno.length > 0) {
+                texto += `🌙 Noturno:\n`;
+                hojeNoturno.forEach(v => texto += `- ${v.nome} (${v.inicio} às ${v.fim})\n`);
+            } else { texto += `🌙 Noturno: Livre\n`; }
+
+            texto += `\n📅 *AMANHÃ (${amanha})*\n`;
+            let amaDiurno = bancoDeDados[`${amanha}-Diurno`] || [];
+            let amaNoturno = bancoDeDados[`${amanha}-Noturno`] || [];
+            
+            if(amaDiurno.length > 0) {
+                texto += `☀️ Diurno:\n`;
+                amaDiurno.forEach(v => texto += `- ${v.nome} (${v.inicio} às ${v.fim})\n`);
+            } else { texto += `☀️ Diurno: Livre\n`; }
+            
+            if(amaNoturno.length > 0) {
+                texto += `🌙 Noturno:\n`;
+                amaNoturno.forEach(v => texto += `- ${v.nome} (${v.inicio} às ${v.fim})\n`);
+            } else { texto += `🌙 Noturno: Livre\n`; }
+
+            let url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+            window.open(url, '_blank');
+        }
+
+        function abrirRelatorio() {
+            try {
+                const bancoDeDados = JSON.parse(localStorage.getItem('visitasDonaArlinda')) || {};
+                const corpoTabela = document.getElementById('corpo-tabela-relatorio');
+                corpoTabela.innerHTML = '';
+                
+                document.getElementById('data-geracao-relatorio').innerText = new Date().toLocaleString('pt-BR');
+
+                diasAtivos.forEach(diaInfo => {
+                    const listaDiurno = bancoDeDados[`${diaInfo.idUnico}-Diurno`] || [];
+                    const listaNoturno = bancoDeDados[`${diaInfo.idUnico}-Noturno`] || [];
+
+                    let textoDiurno = listaDiurno.length === 0 ? '<i>Livre</i>' : listaDiurno.map(v => `• <strong>${v.nome}</strong> (${v.inicio} às ${v.fim})`).join('<br><br>');
+                    let textoNoturno = listaNoturno.length === 0 ? '<i>Livre</i>' : listaNoturno.map(v => `• <strong>${v.nome}</strong> (${v.inicio} às ${v.fim})`).join('<br><br>');
+
+                    const linha = `<tr>
+                        <td><strong>${diaInfo.tituloPrincipal}</strong><br><span style="font-size:12px;color:#7f8c8d;">${diaInfo.subTitulo}</span></td>
+                        <td>${textoDiurno}</td>
+                        <td>${textoNoturno}</td>
+                    </tr>`;
+                    corpoTabela.innerHTML += linha;
+                });
+
+                const textoObs = localStorage.getItem('obsDonaArlinda') || 'Nenhuma observação registrada.';
+                document.getElementById('obs-relatorio-texto').innerHTML = textoObs.replace(/\n/g, '<br>');
+
+                document.getElementById('tela-painel').style.display = 'none';
+                document.getElementById('tela-relatorio').style.display = 'block';
+            } catch (erro) {
+                alert("Ocorreu um erro ao montar o relatório: " + erro.message);
+            }
+        }
+
+        function fecharRelatorio() {
+            document.getElementById('tela-relatorio').style.display = 'none';
+            document.getElementById('tela-painel').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
