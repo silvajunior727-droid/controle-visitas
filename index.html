@@ -160,7 +160,7 @@
             </div>
             <div class="info-paciente">
                 <h2>Arlinda Batista Passos</h2>
-                <p><strong>Andar:</strong> 6º | <strong>Leito:</strong> 901</p>
+                <p><strong>Andar:</strong> 6º | <strong>Leito:</strong> 601</p>
             </div>
             <button class="btn-sair" onclick="sairDoSistema()">Sair</button>
         </div>
@@ -193,7 +193,7 @@
         
         <div class="relatorio-cabecalho">
             <h1>Relatório de Visitas e Recomendações</h1>
-            <p>Paciente: <strong>Arlinda Batista Passos</strong> | Andar: 6º | Leito: 901</p>
+            <p>Paciente: <strong>Arlinda Batista Passos</strong> | Andar: 6º | Leito: 601</p>
             <p>Gerado em: <span id="data-geracao-relatorio"></span></p>
         </div>
 
@@ -248,7 +248,7 @@
         function fazerLogin() {
             const nomeDigitado = document.getElementById('nome-visitante').value;
             const senhaDigitada = document.getElementById('senha-acesso').value;
-            if (senhaDigitada === '6-901' && nomeDigitado.trim() !== '') {
+            if (senhaDigitada === '6-601' && nomeDigitado.trim() !== '') {
                 localStorage.setItem('visitanteAtual', nomeDigitado);
                 document.getElementById('tela-login').style.display = 'none';
                 document.getElementById('tela-painel').style.display = 'block';
@@ -562,3 +562,4 @@
     </script>
 </body>
 </html>
+
