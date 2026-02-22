@@ -20,7 +20,6 @@
         
         .input-grupo { margin-bottom: 15px; position: relative; }
         .input-grupo input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
-        /* Ajuste pro olhinho não sobrepor o texto da senha */
         #senha-acesso { padding-right: 45px; }
         .olhinho { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; user-select: none; }
         
@@ -74,8 +73,7 @@
 
         /* Observações e Botões do Rodapé */
         .observacoes-container { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .observacoes-container h3 { color: #2c3e50; margin-bottom: 10px; }
-        textarea { width: 100%; height: 120px; padding: 12px; border: 1px solid #ccc; border-radius: 6px; resize: none; font-family: inherit; margin-bottom: 15px; }
+        textarea { width: 100%; height: 150px; padding: 12px; border: 1px solid #ccc; border-radius: 6px; resize: none; font-family: inherit; margin-bottom: 15px; line-height: 1.5; }
         
         .botoes-rodape { display: flex; gap: 15px; flex-wrap: wrap; }
         .botoes-rodape button { flex: 1; margin-bottom: 0; min-width: 200px; } 
@@ -135,13 +133,21 @@
             .btn-voltar-suave, .btn-imprimir-suave { max-width: 100%; width: 100%; }
         }
 
+        /* REGRAS DE IMPRESSÃO PROFISSIONAIS (QUEBRA DE PÁGINA) */
         @media print {
             .no-print { display: none !important; }
             body { background: white; margin: 0; padding: 0; }
             #tela-relatorio { padding: 0; margin: 0; width: 100%; max-width: 100%; box-shadow: none; border-radius: 0; display: block !important; align-self: stretch; }
             #tela-painel, #tela-login, #modal-overlay { display: none !important; }
-            .tabela-wrapper { overflow-x: visible; box-shadow: none; }
+            .tabela-wrapper { overflow-x: visible; box-shadow: none; margin-bottom: 20px; }
             .tabela-relatorio { min-width: 100%; }
+            
+            /* Evita cortar linhas da tabela no meio */
+            tr { page-break-inside: avoid; break-inside: avoid; }
+            
+            /* Evita cortar o bloco de observação e afasta do título */
+            h3 { page-break-after: avoid; break-after: avoid; margin-top: 30px; }
+            .obs-relatorio { page-break-inside: avoid; break-inside: avoid; }
         }
     </style>
 </head>
@@ -193,8 +199,12 @@
         </div>
 
         <div class="observacoes-container">
-            <h3>Recomendações Médicas e Novidades</h3>
-            <textarea id="texto-observacoes" placeholder="Ex: A médica passou às 10h..."></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+                <h3 style="margin-bottom: 0;">Recomendações Médicas e Novidades</h3>
+                <button onclick="inserirDataObs()" style="background-color: #f39c12; box-shadow: 0 4px #e67e22; width: auto; padding: 6px 15px; margin: 0; font-size: 13px;">🗓️ Inserir Data de Hoje</button>
+            </div>
+            
+            <textarea id="texto-observacoes" placeholder="Clique no botão acima para inserir a data de hoje ou digite livremente..."></textarea>
             
             <div class="botoes-rodape">
                 <button onclick="salvarObservacao()">Salvar Observação</button>
@@ -293,6 +303,16 @@
         let conexaoIniciada = false; 
         let deslocamentoDias = 0; 
 
+        // Função para Inserir Data na Observação
+        function inserirDataObs() {
+            const textarea = document.getElementById('texto-observacoes');
+            const dataHoje = new Date().toLocaleDateString('pt-BR');
+            const separador = textarea.value.trim() === '' ? `🗓️ === ${dataHoje} ===\n` : `\n\n🗓️ === ${dataHoje} ===\n`;
+            
+            textarea.value += separador;
+            textarea.focus(); // Coloca o cursor piscando lá dentro pra digitar
+        }
+
         // Função do Olhinho da Senha
         function toggleSenha() {
             const inputSenha = document.getElementById('senha-acesso');
@@ -322,10 +342,8 @@
             const nomeDigitado = document.getElementById('nome-visitante').value;
             const senhaDigitada = document.getElementById('senha-acesso').value;
             
-            // Permite tanto 6-901 quanto 6-601 para você não ter problemas
             if ((senhaDigitada === '6-901' || senhaDigitada === '6-601') && nomeDigitado.trim() !== '') {
                 
-                // MENSAGEM DE BOAS VINDAS
                 document.getElementById('boas-vindas-texto').innerHTML = `Oi, <strong>${nomeDigitado}</strong> - grato por sua visita!`;
 
                 document.getElementById('tela-login').style.display = 'none';
@@ -339,14 +357,13 @@
         function sairDoSistema() {
             document.getElementById('nome-visitante').value = '';
             document.getElementById('senha-acesso').value = '';
-            document.getElementById('senha-acesso').type = 'password'; // Volta a esconder a senha
+            document.getElementById('senha-acesso').type = 'password'; 
             document.getElementById('mensagem-erro').style.display = 'none';
             document.getElementById('tela-painel').style.display = 'none';
             document.getElementById('tela-login').style.display = 'flex';
             
-            deslocamentoDias = 0; // Reseta a Máquina do Tempo
+            deslocamentoDias = 0; 
 
-            // BUG DO APAGÃO RESOLVIDO: Desconecta o Firebase ao sair
             if (conexaoIniciada) {
                 db.ref('visitasDonaArlinda').off();
                 db.ref('obsDonaArlinda').off();
@@ -566,11 +583,9 @@
 
             if (erro) { alert(msgErro); return; }
 
-            // FIM DA DEMORA: Atualiza a tela localmente NA HORA antes mesmo do Firebase responder
             bancoDeDadosNuvem[`${diaEdicao}-${turnoEdicao}`] = novaLista;
             gerarDiasDaSemana(); 
             
-            // Manda pra nuvem silenciosamente
             db.ref('visitasDonaArlinda').set(bancoDeDadosNuvem);
             fecharModal();
         }
