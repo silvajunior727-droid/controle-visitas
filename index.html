@@ -17,8 +17,12 @@
         .cartao-login { background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 400px; }
         .cartao-login h2 { color: #2c3e50; margin-bottom: 5px; }
         .cartao-login p { color: #7f8c8d; margin-bottom: 25px; font-size: 14px; }
-        .input-grupo { margin-bottom: 15px; }
+        
+        .input-grupo { margin-bottom: 15px; position: relative; }
         .input-grupo input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
+        /* Ajuste pro olhinho não sobrepor o texto da senha */
+        #senha-acesso { padding-right: 45px; }
+        .olhinho { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; user-select: none; }
         
         button { width: 100%; padding: 12px; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; background-color: #3498db; box-shadow: 0 5px #2980b9; transition: all 0.1s; margin-bottom: 10px; }
         button:active { box-shadow: 0 2px #2980b9; transform: translateY(3px); }
@@ -34,18 +38,21 @@
         .info-paciente { flex-grow: 1; }
         .info-paciente h2 { color: #2c3e50; font-size: 24px; }
         .info-paciente p { color: #7f8c8d; font-size: 16px; margin-top: 5px; }
+        .mensagem-boas-vindas { color: #27ae60; font-size: 15px; margin-top: 8px !important; }
         
-        .botoes-cabecalho { display: flex; gap: 10px; }
-        .btn-sair { background-color: #e74c3c; box-shadow: 0 5px #c0392b; width: auto; padding: 10px 25px; margin-bottom: 0; }
+        .btn-sair { background-color: #e74c3c; box-shadow: 0 5px #c0392b; width: auto; padding: 10px 25px; margin-bottom: 0; margin-left: auto;}
         .btn-sair:active { box-shadow: 0 2px #c0392b; }
         
-        /* BOTÃO SECRETO DO JÚNIOR */
-        #btn-reset { background-color: #8e44ad; box-shadow: 0 5px #732d91; display: none; }
-        #btn-reset:active { box-shadow: 0 2px #732d91; }
-
-        /* Grade Semanal */
+        /* Grade Semanal e Navegação no Tempo */
         .semana-container { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .semana-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: #2c3e50; flex-wrap: wrap; gap: 10px; }
+        
+        .navegacao-semana { display: flex; gap: 10px; align-items: center; }
+        .btn-nav { background-color: #ecf0f1; color: #2c3e50; box-shadow: 0 4px #bdc3c7; padding: 8px 15px; font-size: 14px; width: auto; margin: 0; }
+        .btn-nav:active { box-shadow: 0 2px #bdc3c7; }
+        .btn-hoje { background-color: #34495e; color: white; box-shadow: 0 4px #2c3e50; }
+        .btn-hoje:active { box-shadow: 0 2px #2c3e50; }
+
         .grade-dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
         .dia-coluna { display: flex; flex-direction: column; gap: 10px; }
         .dia-titulo { text-align: center; font-weight: bold; color: #34495e; padding-bottom: 5px; border-bottom: 2px solid #ecf0f1; font-size: 14px; }
@@ -81,9 +88,12 @@
         #modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; padding: 10px; }
         .modal-conteudo { background: white; padding: 25px; border-radius: 12px; width: 100%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
         .modal-conteudo h3 { color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; margin-bottom: 15px; text-align: center; }
-        .slot-visita { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6; margin-bottom: 10px; }
-        .slot-visita label { font-size: 13px; font-weight: bold; color: #34495e; display: block; margin-bottom: 5px; }
+        .slot-visita { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6; margin-bottom: 10px; position: relative; }
         
+        .slot-visita label { font-size: 13px; font-weight: bold; color: #34495e; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .btn-limpar { font-size: 11px; color: #e74c3c; cursor: pointer; background: #fadbd8; padding: 3px 8px; border-radius: 4px; font-weight: normal; }
+        .btn-limpar:hover { background: #f5b7b1; }
+
         .slot-visita input[type="text"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; margin-bottom: 8px; }
         .linha-horario { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #7f8c8d; }
         .linha-horario input[type="text"].input-hora { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; flex: 1; text-align: center; }
@@ -112,8 +122,9 @@
         @media (max-width: 768px) {
             .cabecalho-paciente { flex-direction: column; text-align: center; }
             .foto-container { margin: 0 auto 15px auto; }
-            .botoes-cabecalho { margin-top: 15px; width: 100%; flex-direction: column; }
-            .btn-sair, #btn-reset { width: 100%; margin: 0; }
+            .btn-sair { margin: 15px auto 0 auto; width: 100%; }
+            .navegacao-semana { width: 100%; justify-content: space-between; }
+            .btn-nav { flex: 1; padding: 10px; }
             .grade-dias { grid-template-columns: 1fr; }
             #tela-painel { padding: 10px; }
             .semana-container, .observacoes-container, .cabecalho-paciente { padding: 15px; }
@@ -141,7 +152,12 @@
             <h2>Controle de Visitas</h2>
             <p>Paciente: Arlinda Batista Passos</p>
             <div class="input-grupo"><input type="text" id="nome-visitante" placeholder="Seu Nome (Visitante)" required></div>
-            <div class="input-grupo"><input type="password" id="senha-acesso" placeholder="Senha de Acesso" required></div>
+            
+            <div class="input-grupo">
+                <input type="password" id="senha-acesso" placeholder="Senha de Acesso" required>
+                <span class="olhinho" onclick="toggleSenha()">👁️</span>
+            </div>
+            
             <button onclick="fazerLogin()">Entrar</button>
             <p id="mensagem-erro">Senha incorreta ou nome em branco!</p>
         </div>
@@ -155,17 +171,23 @@
             <div class="info-paciente">
                 <h2>Arlinda Batista Passos</h2>
                 <p><strong>Andar:</strong> 6º | <strong>Leito:</strong> 601</p>
+                <p id="boas-vindas-texto" class="mensagem-boas-vindas"></p>
             </div>
-            <div class="botoes-cabecalho">
-                <button id="btn-reset" class="btn-sair" onclick="resetarSistema()">Zerar Dados</button>
-                <button class="btn-sair" onclick="sairDoSistema()">Sair</button>
-            </div>
+            <button class="btn-sair" onclick="sairDoSistema()">Sair</button>
         </div>
 
         <div class="semana-container">
             <div class="semana-header">
-                <h3>Monitoramento ao Vivo (Nuvem)</h3>
-                <p><strong>Exibindo:</strong> Hoje e próximos 6 dias</p>
+                <div>
+                    <h3>Monitoramento (Nuvem)</h3>
+                    <p id="texto-periodo"><strong>Exibindo:</strong> Hoje e próximos 6 dias</p>
+                </div>
+                
+                <div class="navegacao-semana">
+                    <button class="btn-nav" onclick="mudarSemana(-7)">⬅️ Ant.</button>
+                    <button class="btn-nav btn-hoje" onclick="irParaHoje()">Hoje</button>
+                    <button class="btn-nav" onclick="mudarSemana(7)">Próx. ➡️</button>
+                </div>
             </div>
             <div class="grade-dias" id="grade-dias"></div>
         </div>
@@ -215,9 +237,25 @@
     <div id="modal-overlay">
         <div class="modal-conteudo">
             <h3 id="modal-titulo">Visitas</h3>
-            <div class="slot-visita"><label>Vaga 1</label><input type="text" id="nome-vaga-1" placeholder="Nome do Visitante"><div class="linha-horario">Das <input type="text" class="input-hora" id="inicio-vaga-1" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"> às <input type="text" class="input-hora" id="fim-vaga-1" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"></div></div>
-            <div class="slot-visita"><label>Vaga 2</label><input type="text" id="nome-vaga-2" placeholder="Nome do Visitante"><div class="linha-horario">Das <input type="text" class="input-hora" id="inicio-vaga-2" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"> às <input type="text" class="input-hora" id="fim-vaga-2" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"></div></div>
-            <div class="slot-visita"><label>Vaga 3</label><input type="text" id="nome-vaga-3" placeholder="Nome do Visitante"><div class="linha-horario">Das <input type="text" class="input-hora" id="inicio-vaga-3" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"> às <input type="text" class="input-hora" id="fim-vaga-3" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"></div></div>
+            
+            <div class="slot-visita">
+                <label>Vaga 1 <span class="btn-limpar" onclick="limparVaga(1)">🗑️ Limpar</span></label>
+                <input type="text" id="nome-vaga-1" placeholder="Nome do Visitante">
+                <div class="linha-horario">Das <input type="text" class="input-hora" id="inicio-vaga-1" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"> às <input type="text" class="input-hora" id="fim-vaga-1" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"></div>
+            </div>
+            
+            <div class="slot-visita">
+                <label>Vaga 2 <span class="btn-limpar" onclick="limparVaga(2)">🗑️ Limpar</span></label>
+                <input type="text" id="nome-vaga-2" placeholder="Nome do Visitante">
+                <div class="linha-horario">Das <input type="text" class="input-hora" id="inicio-vaga-2" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"> às <input type="text" class="input-hora" id="fim-vaga-2" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"></div>
+            </div>
+            
+            <div class="slot-visita">
+                <label>Vaga 3 <span class="btn-limpar" onclick="limparVaga(3)">🗑️ Limpar</span></label>
+                <input type="text" id="nome-vaga-3" placeholder="Nome do Visitante">
+                <div class="linha-horario">Das <input type="text" class="input-hora" id="inicio-vaga-3" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"> às <input type="text" class="input-hora" id="fim-vaga-3" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"></div>
+            </div>
+            
             <div class="modal-botoes">
                 <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
                 <button class="btn-salvar" onclick="salvarVisitas()">Salvar</button>
@@ -227,12 +265,12 @@
 
     <script>
         // ==========================================
-        // CONFIGURAÇÃO DO FIREBASE COM SUAS CHAVES!
+        // CONFIGURAÇÃO DO FIREBASE (JÁ COM AS SUAS CHAVES)
         // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyDa7vGvKOKzCAlnIADGUbOtWpr-vZ8iUSY",
             authDomain: "controle-visitas-arlinda.firebaseapp.com",
-            databaseURL: "https://controle-visitas-arlinda-default-rtdb.firebaseio.com", // Adicionado manualmente para o Banco de Dados funcionar!
+            databaseURL: "https://controle-visitas-arlinda-default-rtdb.firebaseio.com",
             projectId: "controle-visitas-arlinda",
             storageBucket: "controle-visitas-arlinda.firebasestorage.app",
             messagingSenderId: "542401912473",
@@ -251,7 +289,19 @@
         let diaEdicao = '';
         let turnoEdicao = '';
         let diasAtivos = []; 
-        let bancoDeDadosNuvem = {}; // Agora a verdade absoluta vem daqui!
+        let bancoDeDadosNuvem = {}; 
+        let conexaoIniciada = false; 
+        let deslocamentoDias = 0; 
+
+        // Função do Olhinho da Senha
+        function toggleSenha() {
+            const inputSenha = document.getElementById('senha-acesso');
+            if (inputSenha.type === 'password') {
+                inputSenha.type = 'text';
+            } else {
+                inputSenha.type = 'password';
+            }
+        }
 
         function formatarHora(campo) {
             let valor = campo.value.replace(/\D/g, ''); 
@@ -262,24 +312,25 @@
             }
         }
 
+        function limparVaga(numeroVaga) {
+            document.getElementById(`nome-vaga-${numeroVaga}`).value = '';
+            document.getElementById(`inicio-vaga-${numeroVaga}`).value = '';
+            document.getElementById(`fim-vaga-${numeroVaga}`).value = '';
+        }
+
         function fazerLogin() {
             const nomeDigitado = document.getElementById('nome-visitante').value;
             const senhaDigitada = document.getElementById('senha-acesso').value;
-            if (senhaDigitada === '6-601' && nomeDigitado.trim() !== '') {
+            
+            // Permite tanto 6-901 quanto 6-601 para você não ter problemas
+            if ((senhaDigitada === '6-901' || senhaDigitada === '6-601') && nomeDigitado.trim() !== '') {
                 
-                // MÁGICA DO BOTÃO SECRETO DO JÚNIOR
-                let nomeAdmin = nomeDigitado.trim().toUpperCase();
-                if (nomeAdmin === 'JÚNIOR' || nomeAdmin === 'JUNIOR') {
-                    document.getElementById('btn-reset').style.display = 'block';
-                } else {
-                    document.getElementById('btn-reset').style.display = 'none';
-                }
+                // MENSAGEM DE BOAS VINDAS
+                document.getElementById('boas-vindas-texto').innerHTML = `Oi, <strong>${nomeDigitado}</strong> - grato por sua visita!`;
 
                 document.getElementById('tela-login').style.display = 'none';
                 document.getElementById('tela-painel').style.display = 'block';
-                
-                iniciarConexaoNuvem();
-                setInterval(gerarDiasDaSemana, 60000); 
+                iniciarConexaoNuvem(); 
             } else {
                 document.getElementById('mensagem-erro').style.display = 'block';
             }
@@ -288,52 +339,84 @@
         function sairDoSistema() {
             document.getElementById('nome-visitante').value = '';
             document.getElementById('senha-acesso').value = '';
+            document.getElementById('senha-acesso').type = 'password'; // Volta a esconder a senha
             document.getElementById('mensagem-erro').style.display = 'none';
             document.getElementById('tela-painel').style.display = 'none';
             document.getElementById('tela-login').style.display = 'flex';
-        }
-
-        // ==========================================
-        // COMUNICAÇÃO EM TEMPO REAL COM FIREBASE
-        // ==========================================
-        function iniciarConexaoNuvem() {
-            calcularSeteDias();
             
-            // Escuta as Visitas da Nuvem
-            db.ref('visitasDonaArlinda').on('value', (snapshot) => {
-                bancoDeDadosNuvem = snapshot.val() || {};
-                gerarDiasDaSemana(); // Atualiza a tela sozinho sempre que alguém mudar no mundo!
-            });
+            deslocamentoDias = 0; // Reseta a Máquina do Tempo
 
-            // Escuta as Observações da Nuvem
-            db.ref('obsDonaArlinda').on('value', (snapshot) => {
-                document.getElementById('texto-observacoes').value = snapshot.val() || '';
-            });
+            // BUG DO APAGÃO RESOLVIDO: Desconecta o Firebase ao sair
+            if (conexaoIniciada) {
+                db.ref('visitasDonaArlinda').off();
+                db.ref('obsDonaArlinda').off();
+                conexaoIniciada = false;
+            }
         }
 
-        // BOTÃO DE RESET (Apenas para o Júnior)
-        function resetarSistema() {
-            if(confirm("ATENÇÃO: Você está prestes a apagar todas as visitas e observações da nuvem! Tem certeza?")) {
-                db.ref('visitasDonaArlinda').set({});
-                db.ref('obsDonaArlinda').set("");
-                alert("O sistema foi zerado e todos os celulares conectados serão limpos automaticamente!");
+        function mudarSemana(dias) {
+            deslocamentoDias += dias;
+            atualizarPainel();
+        }
+
+        function irParaHoje() {
+            deslocamentoDias = 0;
+            atualizarPainel();
+        }
+
+        function iniciarConexaoNuvem() {
+            atualizarPainel();
+            
+            if (!conexaoIniciada) {
+                db.ref('visitasDonaArlinda').on('value', (snapshot) => {
+                    bancoDeDadosNuvem = snapshot.val() || {};
+                    gerarDiasDaSemana(); 
+                });
+
+                db.ref('obsDonaArlinda').on('value', (snapshot) => {
+                    document.getElementById('texto-observacoes').value = snapshot.val() || '';
+                });
+
+                setInterval(gerarDiasDaSemana, 60000); 
+                conexaoIniciada = true;
             }
+        }
+
+        function atualizarPainel() {
+            calcularSeteDias();
+            gerarDiasDaSemana();
         }
 
         function calcularSeteDias() {
             diasAtivos = [];
             const nomesSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            
+            let hojeReal = new Date();
+            let stringHojeReal = hojeReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+
             for(let i = 0; i < 7; i++) {
                 let dataObj = new Date();
-                dataObj.setDate(dataObj.getDate() + i);
+                dataObj.setDate(dataObj.getDate() + deslocamentoDias + i); 
+                
                 let diaSemanaNome = nomesSemana[dataObj.getDay()];
                 let dataFormatada = dataObj.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+                
+                let titulo = (dataFormatada === stringHojeReal) ? 'Hoje' : diaSemanaNome;
+
                 diasAtivos.push({
                     idUnico: `${dataFormatada}`, 
-                    tituloPrincipal: i === 0 ? 'Hoje' : diaSemanaNome,
+                    tituloPrincipal: titulo,
                     subTitulo: dataFormatada,
                     objetoData: dataObj
                 });
+            }
+
+            if (deslocamentoDias === 0) {
+                document.getElementById('texto-periodo').innerHTML = `<strong>Exibindo:</strong> Hoje e próximos 6 dias`;
+            } else if (deslocamentoDias < 0) {
+                document.getElementById('texto-periodo').innerHTML = `<strong>Exibindo:</strong> Passado (${diasAtivos[0].subTitulo} até ${diasAtivos[6].subTitulo})`;
+            } else {
+                document.getElementById('texto-periodo').innerHTML = `<strong>Exibindo:</strong> Futuro (${diasAtivos[0].subTitulo} até ${diasAtivos[6].subTitulo})`;
             }
         }
 
@@ -350,6 +433,7 @@
 
         function gerarDiasDaSemana() {
             const gradeDias = document.getElementById('grade-dias');
+            if(!gradeDias) return; 
             gradeDias.innerHTML = '';
 
             diasAtivos.forEach(diaInfo => {
@@ -357,7 +441,9 @@
                 divColuna.className = 'dia-coluna';
                 const divTitulo = document.createElement('div');
                 divTitulo.className = 'dia-titulo';
-                divTitulo.innerHTML = `${diaInfo.tituloPrincipal} <span>${diaInfo.subTitulo}</span>`;
+                
+                let corTitulo = diaInfo.tituloPrincipal === 'Hoje' ? 'color: #3498db;' : '';
+                divTitulo.innerHTML = `<span style="font-size:14px; font-weight:bold; ${corTitulo}">${diaInfo.tituloPrincipal}</span> <span>${diaInfo.subTitulo}</span>`;
 
                 // DIURNO
                 const listaDiurno = bancoDeDadosNuvem[`${diaInfo.idUnico}-Diurno`] || [];
@@ -438,6 +524,9 @@
             let erro = false;
             let msgErro = "";
             const listaExistente = bancoDeDadosNuvem[`${diaEdicao}-${turnoEdicao}`] || [];
+            
+            let hojeReal = new Date();
+            let stringHojeReal = hojeReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
 
             for (let i = 1; i <= 3; i++) {
                 const nome = document.getElementById(`nome-vaga-${i}`).value.trim();
@@ -465,7 +554,8 @@
                         let iniValido = (hIni >= 20 || hIni < 8); let fimValido = (hFim >= 20 || hFim <= 8);
                         if (!iniValido || !fimValido) { erro = true; msgErro = `O turno Noturno é das 20h às 08h. Vaga ${i} incorreta!`; break; }
                     }
-                    if (isNovoOuAlterado && diaEdicao === diasAtivos[0].idUnico) {
+                    
+                    if (isNovoOuAlterado && diaEdicao === stringHojeReal) {
                         let dataAgendamento = new Date(); dataAgendamento.setHours(hIni, mIni, 0, 0);
                         if (turnoEdicao === 'Noturno' && hIni < 8 && new Date().getHours() >= 8) { dataAgendamento.setDate(dataAgendamento.getDate() + 1); }
                         if (dataAgendamento < new Date()) { erro = true; msgErro = `Atenção: A hora ${inicio} já passou!`; break; }
@@ -476,8 +566,11 @@
 
             if (erro) { alert(msgErro); return; }
 
-            // Salva na NUVEM do Firebase
+            // FIM DA DEMORA: Atualiza a tela localmente NA HORA antes mesmo do Firebase responder
             bancoDeDadosNuvem[`${diaEdicao}-${turnoEdicao}`] = novaLista;
+            gerarDiasDaSemana(); 
+            
+            // Manda pra nuvem silenciosamente
             db.ref('visitasDonaArlinda').set(bancoDeDadosNuvem);
             fecharModal();
         }
@@ -490,8 +583,12 @@
         }
 
         function enviarWhatsApp() {
-            const hoje = diasAtivos[0].idUnico;
-            const amanha = diasAtivos[1].idUnico;
+            let hojeReal = new Date();
+            let amanhaReal = new Date(); amanhaReal.setDate(amanhaReal.getDate() + 1);
+            
+            const hoje = hojeReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+            const amanha = amanhaReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+            
             let texto = `*Visitas Dona Arlinda - Atualização*\n\n`;
             
             texto += `📅 *HOJE (${hoje})*\n`;
