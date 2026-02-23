@@ -257,7 +257,7 @@
             
             <div class="form-nova-visita">
                 <label>➕ Adicionar Novo Visitante</label>
-                <input type="text" id="novo-nome" placeholder="Nome">
+                <input type="text" id="novo-nome" placeholder="Nome Completo">
                 <div class="linha-horario">
                     Das <input type="text" class="input-hora" id="novo-inicio" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"> 
                     às <input type="text" class="input-hora" id="novo-fim" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)">
@@ -353,13 +353,18 @@
         function mudarSemana(dias) { deslocamentoDias += dias; atualizarPainel(); }
         function irParaHoje() { deslocamentoDias = 0; atualizarPainel(); }
 
+        // MUDANÇA IMPORTANTE: O "RAIO-X" FOI ADICIONADO AQUI PARA ALERTAR DE ERROS
         function iniciarConexaoNuvem() {
             atualizarPainel();
             if (!conexaoIniciada) {
+                // Alerta caso falhe ao ler os dados
                 db.ref('visitasDonaArlinda').on('value', (snapshot) => {
                     bancoDeDadosNuvem = snapshot.val() || {};
                     gerarDiasDaSemana(); 
+                }, (erro) => {
+                    alert("❌ ERRO AO CONECTAR NA NUVEM: " + erro.message);
                 });
+
                 db.ref('obsDonaArlinda').on('value', (snapshot) => {
                     document.getElementById('texto-observacoes').value = snapshot.val() || '';
                 });
@@ -642,11 +647,18 @@
             atualizarListaNoModal();
         }
 
+        // MUDANÇA IMPORTANTE: O "RAIO-X" FOI ADICIONADO AQUI TAMBÉM
         function salvarVisitasNuvem() {
             bancoDeDadosNuvem[`${diaEdicao}-${turnoEdicao}`] = listaTemporariaModal;
             gerarDiasDaSemana(); 
-            db.ref('visitasDonaArlinda').set(bancoDeDadosNuvem);
-            fecharModal();
+            
+            db.ref('visitasDonaArlinda').set(bancoDeDadosNuvem)
+              .then(() => {
+                  fecharModal();
+              })
+              .catch((erro) => {
+                  alert("❌ ERRO AO SALVAR NA NUVEM: " + erro.message);
+              });
         }
 
         // ==========================================
@@ -654,7 +666,9 @@
         // ==========================================
         function salvarObservacao() {
             const texto = document.getElementById('texto-observacoes').value;
-            db.ref('obsDonaArlinda').set(texto).then(() => { alert('Observação salva e sincronizada com todos!'); });
+            db.ref('obsDonaArlinda').set(texto)
+              .then(() => { alert('✅ Observação salva e sincronizada com todos!'); })
+              .catch((erro) => { alert('❌ ERRO AO SALVAR OBSERVAÇÃO: ' + erro.message); });
         }
 
         function enviarWhatsApp() {
@@ -721,5 +735,3 @@
     </script>
 </body>
 </html>
-
-
