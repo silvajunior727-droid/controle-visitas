@@ -1,1 +1,724 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Visitas - Arlinda Batista Passos</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e2e8f0; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* TELA DE LOGIN */
+        #tela-login { display: flex; align-items: center; justify-content: center; height: 100vh; width: 100%; padding: 20px; }
+        .cartao-login { background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 400px; }
+        .cartao-login h2 { color: #2c3e50; margin-bottom: 5px; }
+        .cartao-login p { color: #7f8c8d; margin-bottom: 25px; font-size: 14px; }
+        
+        .input-grupo { margin-bottom: 15px; position: relative; }
+        .input-grupo input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
+        #senha-acesso { padding-right: 45px; }
+        .olhinho { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; user-select: none; }
+        
+        button { width: 100%; padding: 12px; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; background-color: #3498db; box-shadow: 0 5px #2980b9; transition: all 0.1s; margin-bottom: 10px; }
+        button:active { box-shadow: 0 2px #2980b9; transform: translateY(3px); }
+        #mensagem-erro { color: #e74c3c; margin-top: 15px; display: none; font-weight: bold; }
+
+        /* TELA DO PAINEL */
+        #tela-painel { display: none; padding: 20px; max-width: 1200px; margin: 0 auto; width: 100%; }
+        
+        /* Cabeçalho */
+        .cabecalho-paciente { display: flex; align-items: center; background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px; flex-wrap: wrap; }
+        .foto-container { width: 90px; height: 90px; border-radius: 50%; overflow: hidden; border: 4px solid #3498db; margin-right: 20px; background-color: #ecf0f1; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .foto-paciente { width: 100%; height: 100%; object-fit: cover; }
+        .info-paciente { flex-grow: 1; }
+        .info-paciente h2 { color: #2c3e50; font-size: 24px; }
+        .info-paciente p { color: #7f8c8d; font-size: 16px; margin-top: 5px; }
+        .mensagem-boas-vindas { color: #27ae60; font-size: 15px; margin-top: 8px !important; }
+        
+        .btn-sair { background-color: #e74c3c; box-shadow: 0 5px #c0392b; width: auto; padding: 10px 25px; margin-bottom: 0; margin-left: auto;}
+        .btn-sair:active { box-shadow: 0 2px #c0392b; }
+        
+        /* Grade Semanal e Navegação no Tempo */
+        .semana-container { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .semana-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: #2c3e50; flex-wrap: wrap; gap: 10px; }
+        
+        .navegacao-semana { display: flex; gap: 10px; align-items: center; }
+        .btn-nav { background-color: #ecf0f1; color: #2c3e50; box-shadow: 0 4px #bdc3c7; padding: 8px 15px; font-size: 14px; width: auto; margin: 0; }
+        .btn-nav:active { box-shadow: 0 2px #bdc3c7; }
+        .btn-hoje { background-color: #34495e; color: white; box-shadow: 0 4px #2c3e50; }
+        .btn-hoje:active { box-shadow: 0 2px #2c3e50; }
+
+        .grade-dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+        .dia-coluna { display: flex; flex-direction: column; gap: 10px; }
+        .dia-titulo { text-align: center; font-weight: bold; color: #34495e; padding-bottom: 5px; border-bottom: 2px solid #ecf0f1; font-size: 14px; }
+        .dia-titulo span { display: block; font-size: 12px; color: #7f8c8d; font-weight: normal; }
+        
+        /* BLOCOS DOS TURNOS - AGORA SÃO DE COR FIXA NEUTRA */
+        .turno-bloco { padding: 15px 10px; border-radius: 8px; text-align: center; font-weight: bold; color: white; cursor: pointer; font-size: 14px; box-shadow: 0 5px rgba(0,0,0,0.3); transition: all 0.1s; display: flex; flex-direction: column; justify-content: flex-start; min-height: 120px; }
+        .turno-bloco:active { box-shadow: 0 2px rgba(0,0,0,0.3); transform: translateY(3px); }
+        .turno-bloco span.horario { font-size: 11px; margin-top: 2px; font-weight: normal; display: block; margin-bottom: 15px; }
+        
+        .turno-fixo-dia { background-color: #3498db; border: 2px solid #2980b9; } 
+        .turno-fixo-noite { background-color: #2c3e50; border: 2px solid #1a252f; } 
+
+        /* RETÂNGULOS INTELIGENTES DAS HORAS ESCOLHIDAS (FATIADOR DE TEMPO) */
+        .horario-grupo { background: rgba(255, 255, 255, 0.95); border-radius: 6px; padding: 6px; margin-bottom: 10px; text-align: left; box-shadow: 0 3px 6px rgba(0,0,0,0.15); }
+        .horario-header { font-size: 12px; font-weight: bold; padding: 5px; border-radius: 4px; color: white; text-align: center; margin-bottom: 6px; }
+        .horario-nomes { font-size: 12px; line-height: 1.5; color: #2c3e50; font-weight: normal; padding-left: 5px; }
+        
+        .cor-hora-1 { background-color: #2ecc71; text-shadow: 1px 1px 1px rgba(0,0,0,0.3); } /* Verde */
+        .cor-hora-2 { background-color: #f39c12; text-shadow: 1px 1px 1px rgba(0,0,0,0.3); } /* Laranja */
+        .cor-hora-3 { background-color: #e74c3c; text-shadow: 1px 1px 1px rgba(0,0,0,0.3); } /* Vermelho */
+
+        /* Observações e Botões do Rodapé */
+        .observacoes-container { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        textarea { width: 100%; height: 150px; padding: 12px; border: 1px solid #ccc; border-radius: 6px; resize: none; font-family: inherit; margin-bottom: 15px; line-height: 1.5; }
+        
+        .botoes-rodape { display: flex; gap: 15px; flex-wrap: wrap; }
+        .botoes-rodape button { flex: 1; margin-bottom: 0; min-width: 200px; } 
+        .btn-relatorio { background-color: #9b59b6; box-shadow: 0 5px #8e44ad; }
+        .btn-relatorio:active { box-shadow: 0 2px #8e44ad; }
+        .btn-whatsapp { background-color: #25D366; box-shadow: 0 5px #128C7E; }
+        .btn-whatsapp:active { box-shadow: 0 2px #128C7E; }
+
+        /* NOVA JANELA MODAL (DINÂMICA) */
+        #modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; padding: 10px; }
+        .modal-conteudo { background: white; padding: 25px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; }
+        .modal-conteudo h3 { color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; margin-bottom: 15px; text-align: center; }
+        
+        .lista-visitas-modal { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 10px; margin-bottom: 15px; max-height: 200px; overflow-y: auto; }
+        .item-visita-modal { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px dashed #ccc; font-size: 13px; color: #34495e; }
+        .item-visita-modal:last-child { border-bottom: none; }
+        .btn-apagar-modal { background: #fadbd8; color: #c0392b; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; box-shadow: none; width: auto; margin: 0; }
+        .btn-apagar-modal:hover { background: #f5b7b1; }
+
+        .form-nova-visita { background: #eaf2f8; padding: 15px; border-radius: 8px; border: 1px solid #d4e6f1; }
+        .form-nova-visita label { font-size: 13px; font-weight: bold; color: #2980b9; margin-bottom: 10px; display: block; }
+        .form-nova-visita input[type="text"] { width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 14px; margin-bottom: 10px; }
+        
+        .linha-horario { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #34495e; }
+        .linha-horario input[type="text"].input-hora { padding: 10px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 15px; flex: 1; text-align: center; font-weight: bold; color: #2c3e50;}
+        .aviso-regra { font-size: 11px; color: #7f8c8d; margin-top: 8px; line-height: 1.3; }
+
+        .modal-botoes { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-salvar { background-color: #2ecc71; box-shadow: 0 5px #27ae60; flex: 1; margin-bottom: 0; } 
+        .btn-salvar:active { box-shadow: 0 2px #27ae60; }
+        .btn-cancelar { background-color: #95a5a6; box-shadow: 0 5px #7f8c8d; flex: 1; margin-bottom: 0;} 
+        .btn-cancelar:active { box-shadow: 0 2px #7f8c8d; }
+
+        /* TELA DE RELATÓRIO */
+        #tela-relatorio { display: none; padding: 40px; background: white; width: 98%; max-width: 1400px; margin: 20px auto; align-self: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-radius: 12px; }
+        .botoes-relatorio { display: flex; gap: 15px; margin-bottom: 30px; width: 100%; justify-content: center; }
+        .btn-voltar-suave { background-color: #a29bfe; box-shadow: 0 5px #6c5ce7; flex: 1; max-width: 300px; color: white; margin-bottom: 0; }
+        .btn-voltar-suave:active { box-shadow: 0 2px #6c5ce7; }
+        .btn-imprimir-suave { background-color: #74b9ff; box-shadow: 0 5px #0984e3; flex: 1; max-width: 300px; color: white; margin-bottom: 0; }
+        .btn-imprimir-suave:active { box-shadow: 0 2px #0984e3; }
+        .relatorio-cabecalho { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; }
+        .relatorio-cabecalho h1 { color: #2c3e50; }
+        .tabela-wrapper { width: 100%; overflow-x: auto; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .tabela-relatorio { width: 100%; min-width: 600px; border-collapse: collapse; }
+        .tabela-relatorio th, .tabela-relatorio td { border: 1px solid #bdc3c7; padding: 12px; text-align: left; vertical-align: top;}
+        .tabela-relatorio th { background-color: #ecf0f1; color: #2c3e50; }
+        .obs-relatorio { background: #f9f9f9; padding: 20px; border-left: 5px solid #3498db; border-radius: 0 8px 8px 0; }
+
+        @media (max-width: 768px) {
+            .cabecalho-paciente { flex-direction: column; text-align: center; }
+            .foto-container { margin: 0 auto 15px auto; }
+            .btn-sair { margin: 15px auto 0 auto; width: 100%; }
+            .navegacao-semana { width: 100%; justify-content: space-between; }
+            .btn-nav { flex: 1; padding: 10px; }
+            .grade-dias { grid-template-columns: 1fr; }
+            #tela-painel { padding: 10px; }
+            .semana-container, .observacoes-container, .cabecalho-paciente { padding: 15px; }
+            .botoes-rodape { flex-direction: column; gap: 10px; }
+            .botoes-rodape button { width: 100%; }
+            #tela-relatorio { padding: 15px; margin: 0; width: 100%; max-width: 100%; border-radius: 0; align-self: stretch; }
+            .botoes-relatorio { flex-direction: column; align-items: center; }
+            .btn-voltar-suave, .btn-imprimir-suave { max-width: 100%; width: 100%; }
+        }
+
+        /* REGRAS DE IMPRESSÃO */
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; margin: 0; padding: 0; }
+            #tela-relatorio { padding: 0; margin: 0; width: 100%; max-width: 100%; box-shadow: none; border-radius: 0; display: block !important; align-self: stretch; }
+            #tela-painel, #tela-login, #modal-overlay { display: none !important; }
+            .tabela-wrapper { overflow-x: visible; box-shadow: none; margin-bottom: 20px; }
+            .tabela-relatorio { min-width: 100%; }
+            tr { page-break-inside: avoid; break-inside: avoid; }
+            h3 { page-break-after: avoid; break-after: avoid; margin-top: 30px; }
+            .obs-relatorio { page-break-inside: avoid; break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="tela-login">
+        <div class="cartao-login">
+            <h2>Controle de Visitas</h2>
+            <p>Paciente: Arlinda Batista Passos</p>
+            <div class="input-grupo"><input type="text" id="nome-visitante" placeholder="Seu Nome (Visitante)" required></div>
+            
+            <div class="input-grupo">
+                <input type="password" id="senha-acesso" placeholder="Senha de Acesso" required>
+                <span class="olhinho" onclick="toggleSenha()">👁️</span>
+            </div>
+            
+            <button onclick="fazerLogin()">Entrar</button>
+            <p id="mensagem-erro">Senha incorreta ou nome em branco!</p>
+        </div>
+    </div>
+
+    <div id="tela-painel">
+        <div class="cabecalho-paciente">
+            <div class="foto-container">
+                <img src="mae.jpg" alt="Foto Dona Arlinda" class="foto-paciente" onerror="this.src='https://via.placeholder.com/90?text=Sem+Foto'">
+            </div>
+            <div class="info-paciente">
+                <h2>Arlinda Batista Passos</h2>
+                <p><strong>Andar:</strong> 6º | <strong>Leito:</strong> 601</p>
+                <p id="boas-vindas-texto" class="mensagem-boas-vindas"></p>
+            </div>
+            <button class="btn-sair" onclick="sairDoSistema()">Sair</button>
+        </div>
+
+        <div class="semana-container">
+            <div class="semana-header">
+                <div>
+                    <h3>Agenda Médica (Nuvem)</h3>
+                    <p id="texto-periodo"><strong>Exibindo:</strong> Hoje e próximos 6 dias</p>
+                </div>
+                
+                <div class="navegacao-semana">
+                    <button class="btn-nav" onclick="mudarSemana(-7)">⬅️ Ant.</button>
+                    <button class="btn-nav btn-hoje" onclick="irParaHoje()">Hoje</button>
+                    <button class="btn-nav" onclick="mudarSemana(7)">Próx. ➡️</button>
+                </div>
+            </div>
+            <div class="grade-dias" id="grade-dias"></div>
+        </div>
+
+        <div class="observacoes-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+                <h3 style="margin-bottom: 0;">Recomendações Médicas e Novidades</h3>
+                <button onclick="inserirDataObs()" style="background-color: #f39c12; box-shadow: 0 4px #e67e22; width: auto; padding: 6px 15px; margin: 0; font-size: 13px;">🗓️ Inserir Data</button>
+            </div>
+            
+            <textarea id="texto-observacoes" placeholder="Clique no botão acima para inserir a data de hoje ou digite livremente..."></textarea>
+            
+            <div class="botoes-rodape">
+                <button onclick="salvarObservacao()">Salvar Observação</button>
+                <button class="btn-relatorio" onclick="abrirRelatorio()">Gerar Relatório</button>
+                <button class="btn-whatsapp" onclick="enviarWhatsApp()">Enviar no WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tela-relatorio">
+        <div class="no-print botoes-relatorio">
+            <button class="btn-voltar-suave" onclick="fecharRelatorio()">Voltar ao Painel</button>
+            <button class="btn-imprimir-suave" onclick="window.print()">Imprimir / Salvar PDF</button>
+        </div>
+        
+        <div class="relatorio-cabecalho">
+            <h1>Relatório de Visitas e Recomendações</h1>
+            <p>Paciente: <strong>Arlinda Batista Passos</strong> | Andar: 6º | Leito: 601</p>
+            <p>Gerado em: <span id="data-geracao-relatorio"></span></p>
+        </div>
+
+        <h3>Quadro de Visitas</h3>
+        <div class="tabela-wrapper">
+            <table class="tabela-relatorio">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">Dia</th>
+                        <th style="width: 40%;">Turno Diurno (08h às 20h)</th>
+                        <th style="width: 40%;">Turno Noturno (20h às 08h)</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-tabela-relatorio"></tbody>
+            </table>
+        </div>
+
+        <h3>Observações e Recomendações Médicas</h3>
+        <div class="obs-relatorio" id="obs-relatorio-texto"></div>
+    </div>
+
+    <div id="modal-overlay">
+        <div class="modal-conteudo">
+            <h3 id="modal-titulo">Agendar Horário</h3>
+            
+            <div id="lista-visitas-modal" class="lista-visitas-modal">
+                </div>
+            
+            <div class="form-nova-visita">
+                <label>➕ Adicionar Novo Visitante</label>
+                <input type="text" id="novo-nome" placeholder="Nome Completo">
+                <div class="linha-horario">
+                    Das <input type="text" class="input-hora" id="novo-inicio" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"> 
+                    às <input type="text" class="input-hora" id="novo-fim" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)">
+                </div>
+                <p class="aviso-regra">⚠️ <strong>Regra:</strong> Apenas horas cheias (Ex: 14:00) ou meias horas (Ex: 14:30). Limite de 3 pessoas pelo mesmo período de tempo.</p>
+                
+                <button onclick="adicionarNaListaModal()" style="background-color: #3498db; box-shadow: 0 4px #2980b9; padding: 10px; margin-top: 10px; font-size: 15px; margin-bottom: 0;">Confirmar Horário</button>
+            </div>
+            
+            <div class="modal-botoes">
+                <button class="btn-cancelar" onclick="fecharModal()">Cancelar (Sair)</button>
+                <button class="btn-salvar" onclick="salvarVisitasNuvem()">Salvar Agenda</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURAÇÃO DO FIREBASE
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDa7vGvKOKzCAlnIADGUbOtWpr-vZ8iUSY",
+            authDomain: "controle-visitas-arlinda.firebaseapp.com",
+            databaseURL: "https://controle-visitas-arlinda-default-rtdb.firebaseio.com",
+            projectId: "controle-visitas-arlinda",
+            storageBucket: "controle-visitas-arlinda.firebasestorage.app",
+            messagingSenderId: "542401912473",
+            appId: "1:542401912473:web:ad8628ceb4d511d6032208"
+        };
+        
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const db = firebase.database();
+
+        // Variáveis Globais
+        let diaEdicao = '';
+        let turnoEdicao = '';
+        let diasAtivos = []; 
+        let bancoDeDadosNuvem = {}; 
+        let conexaoIniciada = false; 
+        let deslocamentoDias = 0; 
+        let listaTemporariaModal = []; 
+
+        function inserirDataObs() {
+            const textarea = document.getElementById('texto-observacoes');
+            const dataHoje = new Date().toLocaleDateString('pt-BR');
+            const separador = textarea.value.trim() === '' ? `🗓️ === ${dataHoje} ===\n` : `\n\n🗓️ === ${dataHoje} ===\n`;
+            textarea.value += separador;
+            textarea.focus(); 
+        }
+
+        function toggleSenha() {
+            const inputSenha = document.getElementById('senha-acesso');
+            if (inputSenha.type === 'password') { inputSenha.type = 'text'; } 
+            else { inputSenha.type = 'password'; }
+        }
+
+        function formatarHora(campo) {
+            let valor = campo.value.replace(/\D/g, ''); 
+            if (valor.length >= 3) { campo.value = valor.substring(0, 2) + ':' + valor.substring(2, 4); } 
+            else { campo.value = valor; }
+        }
+
+        function fazerLogin() {
+            const nomeDigitado = document.getElementById('nome-visitante').value;
+            const senhaDigitada = document.getElementById('senha-acesso').value;
+            
+            if ((senhaDigitada === '6-901' || senhaDigitada === '6-601') && nomeDigitado.trim() !== '') {
+                document.getElementById('boas-vindas-texto').innerHTML = `Oi, <strong>${nomeDigitado}</strong> - grato por sua visita!`;
+                document.getElementById('tela-login').style.display = 'none';
+                document.getElementById('tela-painel').style.display = 'block';
+                iniciarConexaoNuvem(); 
+            } else {
+                document.getElementById('mensagem-erro').style.display = 'block';
+            }
+        }
+
+        function sairDoSistema() {
+            document.getElementById('nome-visitante').value = '';
+            document.getElementById('senha-acesso').value = '';
+            document.getElementById('senha-acesso').type = 'password'; 
+            document.getElementById('mensagem-erro').style.display = 'none';
+            document.getElementById('tela-painel').style.display = 'none';
+            document.getElementById('tela-login').style.display = 'flex';
+            
+            deslocamentoDias = 0; 
+            if (conexaoIniciada) {
+                db.ref('visitasDonaArlinda').off();
+                db.ref('obsDonaArlinda').off();
+                conexaoIniciada = false;
+            }
+        }
+
+        function mudarSemana(dias) { deslocamentoDias += dias; atualizarPainel(); }
+        function irParaHoje() { deslocamentoDias = 0; atualizarPainel(); }
+
+        function iniciarConexaoNuvem() {
+            atualizarPainel();
+            if (!conexaoIniciada) {
+                db.ref('visitasDonaArlinda').on('value', (snapshot) => {
+                    bancoDeDadosNuvem = snapshot.val() || {};
+                    gerarDiasDaSemana(); 
+                });
+                db.ref('obsDonaArlinda').on('value', (snapshot) => {
+                    document.getElementById('texto-observacoes').value = snapshot.val() || '';
+                });
+                setInterval(gerarDiasDaSemana, 60000); 
+                conexaoIniciada = true;
+            }
+        }
+
+        function atualizarPainel() { calcularSeteDias(); gerarDiasDaSemana(); }
+
+        function calcularSeteDias() {
+            diasAtivos = [];
+            const nomesSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            let hojeReal = new Date();
+            let stringHojeReal = hojeReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+
+            for(let i = 0; i < 7; i++) {
+                let dataObj = new Date();
+                dataObj.setDate(dataObj.getDate() + deslocamentoDias + i); 
+                let diaSemanaNome = nomesSemana[dataObj.getDay()];
+                let dataFormatada = dataObj.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+                let titulo = (dataFormatada === stringHojeReal) ? 'Hoje' : diaSemanaNome;
+
+                diasAtivos.push({ idUnico: `${dataFormatada}`, tituloPrincipal: titulo, subTitulo: dataFormatada, objetoData: dataObj });
+            }
+
+            if (deslocamentoDias === 0) { document.getElementById('texto-periodo').innerHTML = `<strong>Exibindo:</strong> Hoje e próximos 6 dias`; } 
+            else if (deslocamentoDias < 0) { document.getElementById('texto-periodo').innerHTML = `<strong>Exibindo:</strong> Passado (${diasAtivos[0].subTitulo} até ${diasAtivos[6].subTitulo})`; } 
+            else { document.getElementById('texto-periodo').innerHTML = `<strong>Exibindo:</strong> Futuro (${diasAtivos[0].subTitulo} até ${diasAtivos[6].subTitulo})`; }
+        }
+
+        // ==========================================
+        // MÁGICA DE TRANSFORMAR TEMPO
+        // ==========================================
+        function converterParaMinutos(horaString, turno) {
+            let [h, m] = horaString.split(':').map(Number);
+            let min = h * 60 + m;
+            if (turno === 'Noturno' && h < 12) { min += 24 * 60; }
+            return min;
+        }
+
+        function minutosParaHora(minutosTotal) {
+            let h = Math.floor(minutosTotal / 60);
+            let m = minutosTotal % 60;
+            if (h >= 24) h -= 24; 
+            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+        }
+
+        // ==========================================
+        // O FATIADOR DE TEMPO (SWEEPLINE ALGORITHM)
+        // ==========================================
+        function gerarHtmlRetangulosHorario(lista, dataObjeto, turno) {
+            if (lista.length === 0) return '<div style="font-size:12px; margin-top:20px;">Agenda Livre</div>';
+            
+            let eventos = [];
+            lista.forEach(v => {
+                let minI = converterParaMinutos(v.inicio, turno);
+                let minF = converterParaMinutos(v.fim, turno);
+                eventos.push({ time: minI, type: 'start', nome: v.nome });
+                eventos.push({ time: minF, type: 'end', nome: v.nome });
+            });
+
+            // Ordena os eventos no tempo
+            eventos.sort((a, b) => {
+                if (a.time !== b.time) return a.time - b.time;
+                if (a.type === 'end' && b.type === 'start') return -1;
+                if (a.type === 'start' && b.type === 'end') return 1;
+                return 0;
+            });
+
+            let blocos = [];
+            let visitantesAtuais = [];
+            let tempoAnterior = null;
+
+            eventos.forEach(evento => {
+                // Se o tempo passou e tem gente no quarto, cria um bloco visual
+                if (tempoAnterior !== null && evento.time > tempoAnterior && visitantesAtuais.length > 0) {
+                    blocos.push({
+                        inicio: tempoAnterior,
+                        fim: evento.time,
+                        nomes: [...visitantesAtuais]
+                    });
+                }
+                if (evento.type === 'start') {
+                    visitantesAtuais.push(evento.nome);
+                } else {
+                    let index = visitantesAtuais.indexOf(evento.nome);
+                    if (index > -1) visitantesAtuais.splice(index, 1);
+                }
+                tempoAnterior = evento.time;
+            });
+
+            let html = '<div style="margin-top: 10px;">';
+            
+            blocos.forEach(bloco => {
+                let qtd = bloco.nomes.length;
+                let corClasse = 'cor-hora-1'; 
+                if (qtd === 2) corClasse = 'cor-hora-2'; 
+                if (qtd >= 3) corClasse = 'cor-hora-3'; 
+                
+                let horaI = minutosParaHora(bloco.inicio);
+                let horaF = minutosParaHora(bloco.fim);
+                
+                // Checa se ESSE BLOCO específico já passou
+                let expirou = false;
+                let [hFim, mFim] = horaF.split(':').map(Number);
+                let [hIni, mIni] = horaI.split(':').map(Number);
+                let dataHoraFim = new Date(dataObjeto.getTime());
+                if (hFim < hIni) dataHoraFim.setDate(dataHoraFim.getDate() + 1);
+                dataHoraFim.setHours(hFim, mFim, 0, 0);
+                if (new Date() > dataHoraFim) expirou = true;
+
+                let estiloOpacidade = expirou ? 'opacity: 0.5;' : '';
+
+                html += `
+                <div class="horario-grupo" style="${estiloOpacidade}">
+                    <div class="horario-header ${corClasse}">⏱️ ${horaI} às ${horaF}</div>
+                    <div class="horario-nomes">
+                        ${bloco.nomes.map(nome => expirou ? `• <s style="color:#7f8c8d;">${nome}</s>` : `• ${nome}`).join('<br>')}
+                    </div>
+                </div>`;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+
+        function gerarDiasDaSemana() {
+            const gradeDias = document.getElementById('grade-dias');
+            if(!gradeDias) return; 
+            gradeDias.innerHTML = '';
+
+            diasAtivos.forEach(diaInfo => {
+                const divColuna = document.createElement('div');
+                divColuna.className = 'dia-coluna';
+                const divTitulo = document.createElement('div');
+                divTitulo.className = 'dia-titulo';
+                
+                let corTitulo = diaInfo.tituloPrincipal === 'Hoje' ? 'color: #3498db;' : '';
+                divTitulo.innerHTML = `<span style="font-size:14px; font-weight:bold; ${corTitulo}">${diaInfo.tituloPrincipal}</span> <span>${diaInfo.subTitulo}</span>`;
+
+                // DIURNO (COR FIXA NEUTRA)
+                let listaDiurno = bancoDeDadosNuvem[`${diaInfo.idUnico}-Diurno`] || [];
+                let htmlDiurno = gerarHtmlRetangulosHorario(listaDiurno, diaInfo.objetoData, 'Diurno');
+
+                const blocoDiurno = document.createElement('div');
+                blocoDiurno.className = `turno-bloco turno-fixo-dia`;
+                blocoDiurno.innerHTML = `☀️ Diurno <span class="horario">08h - 20h</span> ${htmlDiurno}`;
+                blocoDiurno.onclick = () => abrirModal(diaInfo.idUnico, 'Diurno', diaInfo.tituloPrincipal);
+
+                // NOTURNO (COR FIXA NEUTRA)
+                let listaNoturno = bancoDeDadosNuvem[`${diaInfo.idUnico}-Noturno`] || [];
+                let htmlNoturno = gerarHtmlRetangulosHorario(listaNoturno, diaInfo.objetoData, 'Noturno');
+
+                const blocoNoturno = document.createElement('div');
+                blocoNoturno.className = `turno-bloco turno-fixo-noite`;
+                blocoNoturno.innerHTML = `🌙 Noturno <span class="horario">20h - 08h</span> ${htmlNoturno}`;
+                blocoNoturno.onclick = () => abrirModal(diaInfo.idUnico, 'Noturno', diaInfo.tituloPrincipal);
+
+                divColuna.appendChild(divTitulo);
+                divColuna.appendChild(blocoDiurno);
+                divColuna.appendChild(blocoNoturno);
+                gradeDias.appendChild(divColuna);
+            });
+        }
+
+        // ==========================================
+        // LÓGICA DA JANELA MODAL (AGENDAR / REMOVER)
+        // ==========================================
+        function abrirModal(idData, turno, nomeExibicao) {
+            diaEdicao = idData;
+            turnoEdicao = turno;
+            document.getElementById('modal-titulo').innerText = `${nomeExibicao} (${idData}) - ${turno}`;
+            
+            // Puxa a lista da nuvem para a lista temporária do Modal
+            listaTemporariaModal = [...(bancoDeDadosNuvem[`${idData}-${turno}`] || [])];
+            
+            document.getElementById('novo-nome').value = '';
+            document.getElementById('novo-inicio').value = '';
+            document.getElementById('novo-fim').value = '';
+            
+            atualizarListaNoModal();
+            document.getElementById('modal-overlay').style.display = 'flex';
+        }
+
+        function fecharModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+
+        function atualizarListaNoModal() {
+            const divLista = document.getElementById('lista-visitas-modal');
+            divLista.innerHTML = '';
+            
+            if (listaTemporariaModal.length === 0) {
+                divLista.innerHTML = '<div style="text-align:center; color:#7f8c8d; padding:10px;">Nenhum horário agendado.</div>';
+                return;
+            }
+
+            // A lista do Modal exibe a visita inteira que a pessoa marcou
+            listaTemporariaModal.sort((a, b) => converterParaMinutos(a.inicio, turnoEdicao) - converterParaMinutos(b.inicio, turnoEdicao));
+
+            listaTemporariaModal.forEach((visita, index) => {
+                divLista.innerHTML += `
+                <div class="item-visita-modal">
+                    <div><strong>${visita.inicio} às ${visita.fim}</strong><br>${visita.nome}</div>
+                    <button class="btn-apagar-modal" onclick="removerDaListaModal(${index})">🗑️ Excluir</button>
+                </div>`;
+            });
+        }
+
+        function removerDaListaModal(index) {
+            listaTemporariaModal.splice(index, 1);
+            atualizarListaNoModal();
+        }
+
+        function adicionarNaListaModal() {
+            const nome = document.getElementById('novo-nome').value.trim();
+            const inicio = document.getElementById('novo-inicio').value;
+            const fim = document.getElementById('novo-fim').value;
+
+            if (nome === '' || inicio.length !== 5 || fim.length !== 5) {
+                alert("Preencha o nome e o horário completo (Ex: 14:00)!"); return;
+            }
+
+            let [hIni, mIni] = inicio.split(':').map(Number);
+            let [hFim, mFim] = fim.split(':').map(Number);
+
+            if (isNaN(hIni) || isNaN(mIni) || isNaN(hFim) || isNaN(mFim) || hIni > 23 || mIni > 59 || hFim > 23 || mFim > 59) {
+                alert("Você digitou um horário que não existe!"); return;
+            }
+
+            // REGRA: Apenas hora cheia ou meia hora
+            if ((mIni !== 0 && mIni !== 30) || (mFim !== 0 && mFim !== 30)) {
+                alert("Atenção: Os horários devem ser exatos em horas cheias (ex: 14:00) ou meias horas (ex: 14:30)!"); return;
+            }
+
+            let minI = converterParaMinutos(inicio, turnoEdicao);
+            let minF = converterParaMinutos(fim, turnoEdicao);
+
+            if (minF <= minI) { alert("A hora final deve ser maior que a hora inicial!"); return; }
+
+            // Verifica se está dentro do turno correto
+            if (turnoEdicao === 'Diurno' && (minI < 8*60 || minF > 20*60)) {
+                alert("O turno Diurno permite apenas horários entre 08:00 e 20:00!"); return;
+            }
+            if (turnoEdicao === 'Noturno' && (minI < 20*60 || minF > 32*60)) {
+                alert("O turno Noturno permite apenas horários entre 20:00 e 08:00!"); return;
+            }
+
+            let hojeReal = new Date();
+            let stringHojeReal = hojeReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+            if (diaEdicao === stringHojeReal) {
+                let dataAgendamento = new Date(); dataAgendamento.setHours(hIni, mIni, 0, 0);
+                if (turnoEdicao === 'Noturno' && hIni < 8 && hojeReal.getHours() >= 8) { dataAgendamento.setDate(dataAgendamento.getDate() + 1); }
+                if (dataAgendamento < hojeReal) { alert(`Atenção: A hora ${inicio} já passou!`); return; }
+            }
+
+            // VERIFICAÇÃO DE LIMITE (MÁXIMO 3 PESSOAS)
+            for (let atual = minI; atual < minF; atual += 30) {
+                let sobreposicoes = 0;
+                
+                for (let v of listaTemporariaModal) {
+                    let vMinI = converterParaMinutos(v.inicio, turnoEdicao);
+                    let vMinF = converterParaMinutos(v.fim, turnoEdicao);
+                    if (atual >= vMinI && atual < vMinF) { sobreposicoes++; }
+                }
+                
+                if (sobreposicoes >= 3) {
+                    let conflitoH = Math.floor((atual >= 1440 ? atual - 1440 : atual) / 60).toString().padStart(2, '0');
+                    let conflitoM = (atual % 60).toString().padStart(2, '0');
+                    alert(`🚨 ATENÇÃO: Limite máximo de 3 pessoas atingido no horário das ${conflitoH}:${conflitoM}!`);
+                    return; 
+                }
+            }
+
+            listaTemporariaModal.push({ nome: nome, inicio: inicio, fim: fim });
+            
+            document.getElementById('novo-nome').value = '';
+            document.getElementById('novo-inicio').value = '';
+            document.getElementById('novo-fim').value = '';
+            
+            atualizarListaNoModal();
+        }
+
+        function salvarVisitasNuvem() {
+            bancoDeDadosNuvem[`${diaEdicao}-${turnoEdicao}`] = listaTemporariaModal;
+            gerarDiasDaSemana(); 
+            db.ref('visitasDonaArlinda').set(bancoDeDadosNuvem);
+            fecharModal();
+        }
+
+        // ==========================================
+        // WHATSAPP E RELATÓRIO
+        // ==========================================
+        function salvarObservacao() {
+            const texto = document.getElementById('texto-observacoes').value;
+            db.ref('obsDonaArlinda').set(texto).then(() => { alert('Observação salva e sincronizada com todos!'); });
+        }
+
+        function enviarWhatsApp() {
+            let hojeReal = new Date();
+            let amanhaReal = new Date(); amanhaReal.setDate(amanhaReal.getDate() + 1);
+            
+            const hoje = hojeReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+            const amanha = amanhaReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+            
+            let texto = `*Visitas Dona Arlinda - Atualização*\n\n`;
+            
+            texto += `📅 *HOJE (${hoje})*\n`;
+            let hojeDiurno = bancoDeDadosNuvem[`${hoje}-Diurno`] || [];
+            hojeDiurno.sort((a, b) => converterParaMinutos(a.inicio, 'Diurno') - converterParaMinutos(b.inicio, 'Diurno'));
+            let hojeNoturno = bancoDeDadosNuvem[`${hoje}-Noturno`] || [];
+            hojeNoturno.sort((a, b) => converterParaMinutos(a.inicio, 'Noturno') - converterParaMinutos(b.inicio, 'Noturno'));
+            
+            if(hojeDiurno.length > 0) { texto += `☀️ Diurno:\n`; hojeDiurno.forEach(v => texto += `- ${v.inicio} às ${v.fim}: ${v.nome}\n`); } else { texto += `☀️ Diurno: Livre\n`; }
+            if(hojeNoturno.length > 0) { texto += `🌙 Noturno:\n`; hojeNoturno.forEach(v => texto += `- ${v.inicio} às ${v.fim}: ${v.nome}\n`); } else { texto += `🌙 Noturno: Livre\n`; }
+
+            texto += `\n📅 *AMANHÃ (${amanha})*\n`;
+            let amaDiurno = bancoDeDadosNuvem[`${amanha}-Diurno`] || [];
+            amaDiurno.sort((a, b) => converterParaMinutos(a.inicio, 'Diurno') - converterParaMinutos(b.inicio, 'Diurno'));
+            let amaNoturno = bancoDeDadosNuvem[`${amanha}-Noturno`] || [];
+            amaNoturno.sort((a, b) => converterParaMinutos(a.inicio, 'Noturno') - converterParaMinutos(b.inicio, 'Noturno'));
+            
+            if(amaDiurno.length > 0) { texto += `☀️ Diurno:\n`; amaDiurno.forEach(v => texto += `- ${v.inicio} às ${v.fim}: ${v.nome}\n`); } else { texto += `☀️ Diurno: Livre\n`; }
+            if(amaNoturno.length > 0) { texto += `🌙 Noturno:\n`; amaNoturno.forEach(v => texto += `- ${v.inicio} às ${v.fim}: ${v.nome}\n`); } else { texto += `🌙 Noturno: Livre\n`; }
+
+            let url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+            window.open(url, '_blank');
+        }
+
+        function abrirRelatorio() {
+            try {
+                const corpoTabela = document.getElementById('corpo-tabela-relatorio');
+                corpoTabela.innerHTML = '';
+                document.getElementById('data-geracao-relatorio').innerText = new Date().toLocaleString('pt-BR');
+
+                diasAtivos.forEach(diaInfo => {
+                    let listaDiurno = bancoDeDadosNuvem[`${diaInfo.idUnico}-Diurno`] || [];
+                    listaDiurno.sort((a, b) => converterParaMinutos(a.inicio, 'Diurno') - converterParaMinutos(b.inicio, 'Diurno'));
+                    
+                    let listaNoturno = bancoDeDadosNuvem[`${diaInfo.idUnico}-Noturno`] || [];
+                    listaNoturno.sort((a, b) => converterParaMinutos(a.inicio, 'Noturno') - converterParaMinutos(b.inicio, 'Noturno'));
+                    
+                    let textoDiurno = listaDiurno.length === 0 ? '<i>Livre</i>' : listaDiurno.map(v => `• <strong>${v.inicio} às ${v.fim}</strong>: ${v.nome}`).join('<br><br>');
+                    let textoNoturno = listaNoturno.length === 0 ? '<i>Livre</i>' : listaNoturno.map(v => `• <strong>${v.inicio} às ${v.fim}</strong>: ${v.nome}`).join('<br><br>');
+                    
+                    const linha = `<tr><td><strong>${diaInfo.tituloPrincipal}</strong><br><span style="font-size:12px;color:#7f8c8d;">${diaInfo.subTitulo}</span></td><td>${textoDiurno}</td><td>${textoNoturno}</td></tr>`;
+                    corpoTabela.innerHTML += linha;
+                });
+
+                document.getElementById('obs-relatorio-texto').innerHTML = document.getElementById('texto-observacoes').value.replace(/\n/g, '<br>') || 'Nenhuma observação registrada.';
+                document.getElementById('tela-painel').style.display = 'none';
+                document.getElementById('tela-relatorio').style.display = 'block';
+            } catch (erro) { alert("Ocorreu um erro ao montar o relatório: " + erro.message); }
+        }
+
+        function fecharRelatorio() {
+            document.getElementById('tela-relatorio').style.display = 'none';
+            document.getElementById('tela-painel').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
 
