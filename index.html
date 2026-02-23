@@ -57,7 +57,7 @@
         .dia-titulo { text-align: center; font-weight: bold; color: #34495e; padding-bottom: 5px; border-bottom: 2px solid #ecf0f1; font-size: 14px; }
         .dia-titulo span { display: block; font-size: 12px; color: #7f8c8d; font-weight: normal; }
         
-        /* BLOCOS DOS TURNOS - AGORA SÃO DE COR FIXA NEUTRA */
+        /* BLOCOS DOS TURNOS */
         .turno-bloco { padding: 15px 10px; border-radius: 8px; text-align: center; font-weight: bold; color: white; cursor: pointer; font-size: 14px; box-shadow: 0 5px rgba(0,0,0,0.3); transition: all 0.1s; display: flex; flex-direction: column; justify-content: flex-start; min-height: 120px; }
         .turno-bloco:active { box-shadow: 0 2px rgba(0,0,0,0.3); transform: translateY(3px); }
         .turno-bloco span.horario { font-size: 11px; margin-top: 2px; font-weight: normal; display: block; margin-bottom: 15px; }
@@ -65,14 +65,14 @@
         .turno-fixo-dia { background-color: #3498db; border: 2px solid #2980b9; } 
         .turno-fixo-noite { background-color: #2c3e50; border: 2px solid #1a252f; } 
 
-        /* RETÂNGULOS INTELIGENTES DAS HORAS ESCOLHIDAS (FATIADOR DE TEMPO) */
+        /* RETÂNGULOS INTELIGENTES DAS HORAS ESCOLHIDAS */
         .horario-grupo { background: rgba(255, 255, 255, 0.95); border-radius: 6px; padding: 6px; margin-bottom: 10px; text-align: left; box-shadow: 0 3px 6px rgba(0,0,0,0.15); }
         .horario-header { font-size: 12px; font-weight: bold; padding: 5px; border-radius: 4px; color: white; text-align: center; margin-bottom: 6px; }
         .horario-nomes { font-size: 12px; line-height: 1.5; color: #2c3e50; font-weight: normal; padding-left: 5px; }
         
-        .cor-hora-1 { background-color: #2ecc71; text-shadow: 1px 1px 1px rgba(0,0,0,0.3); } /* Verde */
-        .cor-hora-2 { background-color: #f39c12; text-shadow: 1px 1px 1px rgba(0,0,0,0.3); } /* Laranja */
-        .cor-hora-3 { background-color: #e74c3c; text-shadow: 1px 1px 1px rgba(0,0,0,0.3); } /* Vermelho */
+        .cor-hora-1 { background-color: #2ecc71; text-shadow: 1px 1px 1px rgba(0,0,0,0.3); } 
+        .cor-hora-2 { background-color: #f39c12; text-shadow: 1px 1px 1px rgba(0,0,0,0.3); } 
+        .cor-hora-3 { background-color: #e74c3c; text-shadow: 1px 1px 1px rgba(0,0,0,0.3); } 
 
         /* Observações e Botões do Rodapé */
         .observacoes-container { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
@@ -353,11 +353,9 @@
         function mudarSemana(dias) { deslocamentoDias += dias; atualizarPainel(); }
         function irParaHoje() { deslocamentoDias = 0; atualizarPainel(); }
 
-        // MUDANÇA IMPORTANTE: O "RAIO-X" FOI ADICIONADO AQUI PARA ALERTAR DE ERROS
         function iniciarConexaoNuvem() {
             atualizarPainel();
             if (!conexaoIniciada) {
-                // Alerta caso falhe ao ler os dados
                 db.ref('visitasDonaArlinda').on('value', (snapshot) => {
                     bancoDeDadosNuvem = snapshot.val() || {};
                     gerarDiasDaSemana(); 
@@ -387,8 +385,11 @@
                 let diaSemanaNome = nomesSemana[dataObj.getDay()];
                 let dataFormatada = dataObj.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
                 let titulo = (dataFormatada === stringHojeReal) ? 'Hoje' : diaSemanaNome;
+                
+                // CORREÇÃO: O ID do Banco de Dados não pode ter barra (/)
+                let idParaBanco = dataFormatada.replace(/\//g, '-'); 
 
-                diasAtivos.push({ idUnico: `${dataFormatada}`, tituloPrincipal: titulo, subTitulo: dataFormatada, objetoData: dataObj });
+                diasAtivos.push({ idUnico: idParaBanco, tituloPrincipal: titulo, subTitulo: dataFormatada, objetoData: dataObj });
             }
 
             if (deslocamentoDias === 0) { document.getElementById('texto-periodo').innerHTML = `<strong>Exibindo:</strong> Hoje e próximos 6 dias`; } 
@@ -506,7 +507,7 @@
                 let corTitulo = diaInfo.tituloPrincipal === 'Hoje' ? 'color: #3498db;' : '';
                 divTitulo.innerHTML = `<span style="font-size:14px; font-weight:bold; ${corTitulo}">${diaInfo.tituloPrincipal}</span> <span>${diaInfo.subTitulo}</span>`;
 
-                // DIURNO (COR FIXA NEUTRA)
+                // DIURNO
                 let listaDiurno = bancoDeDadosNuvem[`${diaInfo.idUnico}-Diurno`] || [];
                 let htmlDiurno = gerarHtmlRetangulosHorario(listaDiurno, diaInfo.objetoData, 'Diurno');
 
@@ -515,7 +516,7 @@
                 blocoDiurno.innerHTML = `☀️ Diurno <span class="horario">08h - 20h</span> ${htmlDiurno}`;
                 blocoDiurno.onclick = () => abrirModal(diaInfo.idUnico, 'Diurno', diaInfo.tituloPrincipal);
 
-                // NOTURNO (COR FIXA NEUTRA)
+                // NOTURNO
                 let listaNoturno = bancoDeDadosNuvem[`${diaInfo.idUnico}-Noturno`] || [];
                 let htmlNoturno = gerarHtmlRetangulosHorario(listaNoturno, diaInfo.objetoData, 'Noturno');
 
@@ -537,7 +538,8 @@
         function abrirModal(idData, turno, nomeExibicao) {
             diaEdicao = idData;
             turnoEdicao = turno;
-            document.getElementById('modal-titulo').innerText = `${nomeExibicao} (${idData}) - ${turno}`;
+            // Transforma o traço de volta em barra só para mostrar bonitinho no título do Modal
+            document.getElementById('modal-titulo').innerText = `${nomeExibicao} (${idData.replace('-', '/')}) - ${turno}`;
             
             // Puxa a lista da nuvem para a lista temporária do Modal
             listaTemporariaModal = [...(bancoDeDadosNuvem[`${idData}-${turno}`] || [])];
@@ -613,7 +615,7 @@
             }
 
             let hojeReal = new Date();
-            let stringHojeReal = hojeReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+            let stringHojeReal = hojeReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'}).replace(/\//g, '-');
             if (diaEdicao === stringHojeReal) {
                 let dataAgendamento = new Date(); dataAgendamento.setHours(hIni, mIni, 0, 0);
                 if (turnoEdicao === 'Noturno' && hIni < 8 && hojeReal.getHours() >= 8) { dataAgendamento.setDate(dataAgendamento.getDate() + 1); }
@@ -647,7 +649,6 @@
             atualizarListaNoModal();
         }
 
-        // MUDANÇA IMPORTANTE: O "RAIO-X" FOI ADICIONADO AQUI TAMBÉM
         function salvarVisitasNuvem() {
             bancoDeDadosNuvem[`${diaEdicao}-${turnoEdicao}`] = listaTemporariaModal;
             gerarDiasDaSemana(); 
@@ -675,24 +676,27 @@
             let hojeReal = new Date();
             let amanhaReal = new Date(); amanhaReal.setDate(amanhaReal.getDate() + 1);
             
-            const hoje = hojeReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
-            const amanha = amanhaReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+            const hojeVis = hojeReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+            const amanhaVis = amanhaReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+            
+            const hojeId = hojeVis.replace(/\//g, '-');
+            const amanhaId = amanhaVis.replace(/\//g, '-');
             
             let texto = `*Visitas Dona Arlinda - Atualização*\n\n`;
             
-            texto += `📅 *HOJE (${hoje})*\n`;
-            let hojeDiurno = bancoDeDadosNuvem[`${hoje}-Diurno`] || [];
+            texto += `📅 *HOJE (${hojeVis})*\n`;
+            let hojeDiurno = bancoDeDadosNuvem[`${hojeId}-Diurno`] || [];
             hojeDiurno.sort((a, b) => converterParaMinutos(a.inicio, 'Diurno') - converterParaMinutos(b.inicio, 'Diurno'));
-            let hojeNoturno = bancoDeDadosNuvem[`${hoje}-Noturno`] || [];
+            let hojeNoturno = bancoDeDadosNuvem[`${hojeId}-Noturno`] || [];
             hojeNoturno.sort((a, b) => converterParaMinutos(a.inicio, 'Noturno') - converterParaMinutos(b.inicio, 'Noturno'));
             
             if(hojeDiurno.length > 0) { texto += `☀️ Diurno:\n`; hojeDiurno.forEach(v => texto += `- ${v.inicio} às ${v.fim}: ${v.nome}\n`); } else { texto += `☀️ Diurno: Livre\n`; }
             if(hojeNoturno.length > 0) { texto += `🌙 Noturno:\n`; hojeNoturno.forEach(v => texto += `- ${v.inicio} às ${v.fim}: ${v.nome}\n`); } else { texto += `🌙 Noturno: Livre\n`; }
 
-            texto += `\n📅 *AMANHÃ (${amanha})*\n`;
-            let amaDiurno = bancoDeDadosNuvem[`${amanha}-Diurno`] || [];
+            texto += `\n📅 *AMANHÃ (${amanhaVis})*\n`;
+            let amaDiurno = bancoDeDadosNuvem[`${amanhaId}-Diurno`] || [];
             amaDiurno.sort((a, b) => converterParaMinutos(a.inicio, 'Diurno') - converterParaMinutos(b.inicio, 'Diurno'));
-            let amaNoturno = bancoDeDadosNuvem[`${amanha}-Noturno`] || [];
+            let amaNoturno = bancoDeDadosNuvem[`${amanhaId}-Noturno`] || [];
             amaNoturno.sort((a, b) => converterParaMinutos(a.inicio, 'Noturno') - converterParaMinutos(b.inicio, 'Noturno'));
             
             if(amaDiurno.length > 0) { texto += `☀️ Diurno:\n`; amaDiurno.forEach(v => texto += `- ${v.inicio} às ${v.fim}: ${v.nome}\n`); } else { texto += `☀️ Diurno: Livre\n`; }
