@@ -1,11 +1,11 @@
 {
-  "name": "Controlo de Visitas - Arlinda",
+  "name": "Controle de Visitas - Arlinda",
   "short_name": "Visitas",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#e2e8f0",
   "theme_color": "#3498db",
-  "description": "Aplicação de gestão e controlo de visitas e cuidados.",
+  "description": "Aplicação de gestão e controle de visitas e cuidadores.",
   "icons": [
     {
       "src": "icone-192.png",
