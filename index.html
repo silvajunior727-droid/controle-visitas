@@ -6,7 +6,7 @@
     <title>Controle de Visitas - Arlinda Batista Passos</title>
     
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icone-192.png">
+    <link rel="apple-touch-icon" href="icone-192.png"> 
     <meta name="theme-color" content="#3498db">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -287,7 +287,7 @@
             const nomeDigitado = document.getElementById('nome-visitante').value.trim();
             const senhaDigitada = document.getElementById('senha-acesso').value;
             
-            if ((senhaDigitada === '409' || senhaDigitada === '409') && nomeDigitado !== '') {
+            if ((senhaDigitada === '509' || senhaDigitada === '509') && nomeDigitado !== '') {
                 usuarioLogado = nomeDigitado;
                 document.getElementById('boas-vindas-texto').innerHTML = `Logado como: <strong>${usuarioLogado}</strong>`;
                 document.getElementById('tela-login').style.display = 'none';
@@ -688,3 +688,4 @@
     </script>
 </body>
 </html>
+
