@@ -195,7 +195,7 @@
         <div class="cartao-login">
             <h2>Controle de Visitas</h2>
             <p>Paciente: Arlinda Batista Passos</p>
-            <div class="input-grupo"><input type="text" id="nome-visitante" placeholder="Seu Nome (Visitante/Cuidador)" required></div>
+            <div class="input-grupo"><input type="text" id="nome-visitante" placeholder="Seu Nome" required></div>
             <div class="input-grupo">
                 <input type="password" id="senha-acesso" placeholder="Senha de Acesso" required>
                 <span class="olhinho" onclick="toggleSenha()">👁️</span>
@@ -222,14 +222,16 @@
         </div>
 
 <div class="cartao-branco">
-            <div class="cartao-header">
-                <h3>🗓️ Agenda de Visitas/Cuidadores</h3>
-                <div class="navegacao-semana">
-                    <button class="btn-nav" onclick="mudarSemana(-7)">⬅️ Ant.</button>
+            <div class="cartao-header" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                <h3 style="margin: 0; font-size: 1.1rem;">🗓️ Agenda de Visitas</h3>
+                <div class="navegacao-semana" style="display: flex; justify-content: center; gap: 8px; width: 100%;">
                     
-                    <button class="btn-nav btn-hoje" onclick="irParaHoje()" style="background-color: #d6eaf8; color: #2c3e50; box-shadow: 0 4px #aed6f1; border: none; font-weight: bold;">Hoje</button>
+                    <button class="btn-nav" onclick="mudarSemana(-7)" style="padding: 6px 10px; font-size: 0.85rem;">⬅️ Ant.</button>
                     
-                    <button class="btn-nav" onclick="mudarSemana(7)">Próx. ➡️</button>
+                    <button class="btn-nav btn-hoje" onclick="irParaHoje()" style="background-color: #d6eaf8; color: #2c3e50; box-shadow: 0 4px #aed6f1; border: none; font-weight: bold; padding: 6px 15px; font-size: 0.85rem;">Hoje</button>
+                    
+                    <button class="btn-nav" onclick="mudarSemana(7)" style="padding: 6px 10px; font-size: 0.85rem;">Próx. ➡️</button>
+                    
                 </div>
             </div>
             <div class="grade-dias" id="grade-dias"></div>
