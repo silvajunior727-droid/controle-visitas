@@ -1,11 +1,11 @@
 {
-  "name": "Controle de Visitas - Arlinda",
-  "short_name": "Visitas",
+  "name": "Aplicativo da Dindinha!!!",
+  "short_name": "Dindinha!!!",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#e2e8f0",
   "theme_color": "#3498db",
-  "description": "Aplicação de gestão e controle de visitas e cuidadores.",
+  "description": "Aplicativo carinhoso para gestão de visitas e cuidadores da Dindinha.",
   "icons": [
     {
       "src": "icone-192.png",
