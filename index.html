@@ -6,7 +6,7 @@
     <title>Controle de Visitas - Arlinda Batista Passos</title>
     
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icone-192.png"> 
+    <link rel="apple-touch-icon" href="icone-192.png">
     <meta name="theme-color" content="#3498db">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -44,17 +44,44 @@
         .info-paciente p { color: #7f8c8d; font-size: 16px; margin-top: 5px; }
         .mensagem-boas-vindas { color: #27ae60; font-size: 15px; margin-top: 8px !important; }
         
-        .btn-sair { background-color: #e74c3c; box-shadow: 0 5px #c0392b; width: auto; padding: 10px 25px; margin-bottom: 0; margin-left: auto;}
+      .btn-sair { 
+            background-color: #ff6b6b; /* Vermelho mais claro e suave */
+            box-shadow: 0 5px #ee5253; /* Sombra acompanhando o tom */
+            width: auto; 
+            padding: 10px 25px; 
+            margin-bottom: 0; 
+            margin-left: auto;
+        }
         
         /* Containers e Cartões Brancos */
         .cartao-branco { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .cartao-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: #2c3e50; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px;}
         .cartao-header h3 { display: flex; align-items: center; gap: 8px; }
 
-        /* Grade Semanal */
-        .navegacao-semana { display: flex; gap: 10px; align-items: center; }
-        .btn-nav { background-color: #ecf0f1; color: #2c3e50; box-shadow: 0 4px #bdc3c7; padding: 8px 15px; font-size: 14px; width: auto; margin: 0; }
-        .btn-hoje { background-color: #34495e; color: white; box-shadow: 0 4px #2c3e50; }
+/* Grade Semanal e Navegação */
+        .navegacao-semana { display: flex; gap: 10px; align-items: center; justify-content: center; }
+        
+        .btn-nav { 
+            background-color: #ecf0f1; 
+            color: #2c3e50; 
+            box-shadow: 0 4px #bdc3c7; 
+            padding: 8px 5px; 
+            font-size: 14px; 
+            margin: 0; 
+            flex: 1; /* Esta linha faz todos os botões terem a mesma largura */
+            min-width: 95px; /* Garante que não fiquem muito espremidos no celular */
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Botão Hoje com um azul mais claro e harmonioso */
+        .btn-hoje { 
+            background-color: #3498db; 
+            color: white; 
+            box-shadow: 0 4px #2980b9; 
+        }
         
         .grade-dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
         .dia-coluna { display: flex; flex-direction: column; gap: 10px; }
@@ -74,17 +101,15 @@
         .cor-hora-2 { background-color: #f1c40f; color: #2c3e50 !important; } 
         .cor-hora-3 { background-color: #e67e22; text-shadow: 1px 1px 1px rgba(0,0,0,0.3); } 
         .cor-hora-4 { background-color: #e74c3c; text-shadow: 1px 1px 1px rgba(0,0,0,0.3); } 
-        .cor-hora-2 { color: #2c3e50; } 
 
-        /* Observações */
+        /* Observações e Rodapé */
         textarea { width: 100%; height: 120px; padding: 12px; border: 1px solid #ccc; border-radius: 6px; resize: none; font-family: inherit; margin-bottom: 15px; line-height: 1.5; }
         .botoes-rodape { display: flex; gap: 10px; flex-wrap: wrap; }
         .botoes-rodape button { flex: 1; margin-bottom: 0; min-width: 150px; } 
 
         /* GRAVAÇÃO DE ÁUDIO & MIDIA */
         .btn-gravar { background-color: #e74c3c; box-shadow: 0 5px #c0392b; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .btn-gravar.gravando { background-color: #c0392b; animation: piscar 1.5s infinite; }
-        @keyframes piscar { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+        .btn-gravar.gravando { background-color: #8c1e12; box-shadow: 0 2px #5e1109; transform: translateY(3px); }
         
         .lista-audios { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
         .item-audio { background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #dee2e6; }
@@ -99,17 +124,32 @@
         .cartao-foto img { width: 100%; height: 140px; object-fit: cover; display: block; }
         .legenda-foto { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.7); color: white; font-size: 11px; padding: 5px; text-align: center; }
 
-        /* MODAL E RELATÓRIO (Ocultos no padrão) */
+        /* MODAL DE AGENDAMENTO */
         #modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; padding: 10px; }
         .modal-conteudo { background: white; padding: 25px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; }
-        .linha-horario { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #34495e; margin-bottom: 10px;}
-        .linha-horario input[type="text"].input-hora { padding: 10px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 15px; flex: 1; text-align: center; font-weight: bold; color: #2c3e50;}
-        .form-nova-visita input[type="text"] { width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 14px; margin-bottom: 10px; margin-top: 5px; }
-        .modal-botoes { display: flex; gap: 10px; margin-top: 20px; }
+        .modal-conteudo h3 { color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; margin-bottom: 15px; text-align: center; }
         
-        .item-visita-modal { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px dashed #ccc; font-size: 14px; color: #34495e; }
+        .lista-visitas-modal { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 10px; margin-bottom: 15px; max-height: 200px; overflow-y: auto; }
+        .item-visita-modal { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px dashed #ccc; font-size: 13px; color: #34495e; }
+        .item-visita-modal:last-child { border-bottom: none; }
         .btn-apagar-modal { background: #fadbd8; color: #c0392b; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; box-shadow: none; width: auto; margin: 0; }
+        .btn-apagar-modal:hover { background: #f5b7b1; }
 
+        .form-nova-visita { background: #eaf2f8; padding: 15px; border-radius: 8px; border: 1px solid #d4e6f1; }
+        .form-nova-visita label { font-size: 13px; font-weight: bold; color: #2980b9; margin-bottom: 10px; display: block; }
+        .form-nova-visita input[type="text"] { width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 14px; margin-bottom: 10px; }
+        
+        .linha-horario { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #34495e; }
+        .linha-horario input[type="text"].input-hora { padding: 10px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 15px; flex: 1; text-align: center; font-weight: bold; color: #2c3e50;}
+        .aviso-regra { font-size: 11px; color: #7f8c8d; margin-top: 8px; line-height: 1.3; }
+
+        .modal-botoes { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-salvar { background-color: #2ecc71; box-shadow: 0 5px #27ae60; flex: 1; margin-bottom: 0; } 
+        .btn-salvar:active { box-shadow: 0 2px #27ae60; }
+        .btn-cancelar { background-color: #95a5a6; box-shadow: 0 5px #7f8c8d; flex: 1; margin-bottom: 0;} 
+        .btn-cancelar:active { box-shadow: 0 2px #7f8c8d; }
+
+        /* TELA DE RELATÓRIO */
         #tela-relatorio { display: none; padding: 40px; background: white; width: 98%; max-width: 1400px; margin: 20px auto; border-radius: 12px; }
         .tabela-relatorio { width: 100%; border-collapse: collapse; margin-top: 20px;}
         .tabela-relatorio th, .tabela-relatorio td { border: 1px solid #bdc3c7; padding: 10px; text-align: left;}
@@ -121,16 +161,36 @@
             .cartao-header { flex-direction: column; text-align: center; }
         }
         
-        @media print {
-            body { background: white; }
+@media print {
+            /* Zeramos a margem da impressora para nós mesmos controlarmos */
+            @page { margin: 0; }
+            
+            body { background: white; margin: 0; padding: 0; }
             .no-print, #tela-painel, #tela-login { display: none !important; }
-            #tela-relatorio { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important;}
+            
+            #tela-relatorio { 
+                display: block !important; 
+                width: 85% !important; 
+                /* AQUI ESTÁ O SEGREDO! A ordem é: Cima | Direita | Baixo | Esquerda */
+                margin: 2cm auto 2cm auto !important; 
+                padding: 0 !important;
+            }
+
+            .tabela-relatorio th, .tabela-relatorio td {
+                padding: 8px;
+                font-size: 14px;
+            }
+            
+            #obs-relatorio-texto {
+                font-size: 14px;
+            }
         }
+
     </style>
 </head>
 <body>
 
-    <div id="tela-login">
+<div id="tela-login">
         <div class="cartao-login">
             <h2>Controle de Visitas</h2>
             <p>Paciente: Arlinda Batista Passos</p>
@@ -139,12 +199,14 @@
                 <input type="password" id="senha-acesso" placeholder="Senha de Acesso" required>
                 <span class="olhinho" onclick="toggleSenha()">👁️</span>
             </div>
-            <button onclick="fazerLogin()">Entrar</button>
+            
+            <button onclick="fazerLogin()" style="background-color: #d6eaf8; color: #2c3e50; box-shadow: 0 5px #aed6f1; padding: 12px; border: none; border-radius: 6px; width: 100%; font-size: 16px; font-weight: bold; margin-bottom: 10px;">🔑 Entrar</button>
+            
             <p id="mensagem-erro">Senha incorreta ou nome em branco!</p>
         </div>
     </div>
 
-    <div id="tela-painel">
+<div id="tela-painel">
         <div class="cabecalho-paciente cartao-branco">
             <div class="foto-container">
                 <img src="mae.jpg" alt="Foto Dona Arlinda" class="foto-paciente" onerror="this.src='https://via.placeholder.com/90?text=Sem+Foto'">
@@ -154,57 +216,67 @@
                 <p><strong>Rua:</strong> Água Marinha, 409</p>
                 <p id="boas-vindas-texto" class="mensagem-boas-vindas"></p>
             </div>
-            <button class="btn-sair" onclick="sairDoSistema()">Sair</button>
+            
+            <button class="btn-sair" onclick="sairDoSistema()" style="background-color: #fadbd8; color: #2c3e50; box-shadow: 0 5px #f5b7b1; border: none; font-weight: bold;">👋 Sair</button>
         </div>
 
-        <div class="cartao-branco">
+<div class="cartao-branco">
             <div class="cartao-header">
-                <h3>🗓️ Agenda de Visitas/Cuidados</h3>
+                <h3>🗓️ Agenda de Visitas/Cuidadores</h3>
                 <div class="navegacao-semana">
                     <button class="btn-nav" onclick="mudarSemana(-7)">⬅️ Ant.</button>
-                    <button class="btn-nav btn-hoje" onclick="irParaHoje()">Hoje</button>
+                    
+                    <button class="btn-nav btn-hoje" onclick="irParaHoje()" style="background-color: #d6eaf8; color: #2c3e50; box-shadow: 0 4px #aed6f1; border: none; font-weight: bold;">Hoje</button>
+                    
                     <button class="btn-nav" onclick="mudarSemana(7)">Próx. ➡️</button>
                 </div>
             </div>
             <div class="grade-dias" id="grade-dias"></div>
         </div>
 
-        <div class="cartao-branco">
+       <div class="cartao-branco">
             <div class="cartao-header" style="border-bottom:none; margin-bottom: 5px;">
                 <h3>🩺 Informações Relevantes</h3>
-                <button onclick="inserirDataObs()" style="background-color: #f39c12; box-shadow: 0 4px #e67e22; width: auto; padding: 6px 15px; margin: 0; font-size: 13px;">🗓️ Inserir Data Texto</button>
+<button onclick="inserirDataObs()" style="background-color: #fdebd0; color: #2c3e50; box-shadow: 0 4px #fad7a1; border: none; width: auto; padding: 6px 15px; margin: 0; font-size: 13px; font-weight: bold;">🗓️ Inserir Data / Texto</button>
             </div>
             <textarea id="texto-observacoes" placeholder="Digite informações médicas, dieta, estado geral..."></textarea>
             
             <div class="botoes-rodape" style="margin-bottom: 15px;">
-                <button onclick="salvarObservacao()" style="background-color: #2ecc71; box-shadow: 0 5px #27ae60;">💾 Salvar Texto</button>
-                <button id="btn-gravar-info" class="btn-gravar" onclick="alternarGravacao('info')">🎤 Gravar Informações Relevantes</button>
+                <button onclick="salvarObservacao()" style="background-color: #d5f5e3; color: #2c3e50; box-shadow: 0 5px #a9dfbf;">💾 Salvar Texto</button>
+                <button id="btn-gravar-info" class="btn-gravar" onclick="alternarGravacao('info')" style="background-color: #fadbd8; color: #2c3e50; box-shadow: 0 5px #f5b7b1;">🎤 Gravar Informações Relevantes</button>
             </div>
             
             <div id="lista-audios-info" class="lista-audios"></div>
             
             <div class="botoes-rodape" style="margin-top: 20px; border-top: 1px solid #ecf0f1; padding-top: 15px;">
-                <button style="background-color: #9b59b6; box-shadow: 0 5px #8e44ad;" onclick="abrirRelatorio()">Gerar Relatório</button>
-                <button style="background-color: #25D366; box-shadow: 0 5px #128C7E;" onclick="enviarWhatsApp()">Enviar WhatsApp</button>
+                <button style="background-color: #d5f5e3; color: #2c3e50; box-shadow: 0 5px #a9dfbf;" onclick="abrirRelatorio()">📄 Gerar Relatório</button>
+                <button style="background-color: #fadbd8; color: #2c3e50; box-shadow: 0 5px #f5b7b1;" onclick="enviarWhatsApp()">📲 Enviar WhatsApp</button>
             </div>
         </div>
 
-        <div class="cartao-branco" style="border: 2px solid #fd79a8; background: #fff0f6;">
+<div class="cartao-branco" style="border: 2px solid #fd79a8; background: #fff0f6;">
             <div class="cartao-header" style="border-color: #fab1a0;">
-                <h3 style="color: #d63031;">💌 Recadinhos Fofos de Amor</h3>
+                <h3 style="color: #d63031;">💌 Recadinhos para a Dindinha</h3>
                 <p style="font-size: 13px; color: #e17055;">Deixe uma mensagem de voz carinhosa para ela ouvir!</p>
             </div>
-            <button id="btn-gravar-recado" class="btn-gravar" style="background-color: #fd79a8; box-shadow: 0 5px #e84393;" onclick="alternarGravacao('recadinho')">💖 Gravar Novo Recadinho</button>
+            <button id="btn-gravar-recado" class="btn-gravar" style="background-color: #fadbd8; color: #2c3e50; box-shadow: 0 5px #f5b7b1;" onclick="alternarGravacao('recadinho')">🎤💖 Gravar Novo Recadinho</button>
             <div id="lista-audios-recadinhos" class="lista-audios"></div>
         </div>
 
         <div class="cartao-branco">
             <div class="cartao-header">
-                <h3>📸 Mural de Momentos Lindos</h3>
-                <p style="font-size: 13px; color: #7f8c8d;">Registre e eternize as visitas!</p>
+                <h3>📸 Mural de Fotos com a Dindinha</h3>
+                <p style="font-size: 13px; color: #7f8c8d;">Registre e eternize as visitas!!!</p>
             </div>
-            <input type="file" id="input-foto" accept="image/*" style="display:none" onchange="subirFotoGaleria(event)">
-            <button class="btn-foto" onclick="document.getElementById('input-foto').click()">📷 Tirar Foto ou Escolher da Galeria</button>
+            
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="file" id="input-foto-cam" accept="image/*" capture="environment" style="display:none" onchange="subirFotoGaleria(event)">
+                <input type="file" id="input-foto-gal" accept="image/*" style="display:none" onchange="subirFotoGaleria(event)">
+                
+                <button class="btn-foto" style="flex:1; background-color: #e8daef; color: #2c3e50; box-shadow: 0 5px #d7bde2;" onclick="document.getElementById('input-foto-cam').click()">📷 Abrir Câmera</button>
+                <button class="btn-foto" style="flex:1; background-color: #fdebd0; color: #2c3e50; box-shadow: 0 5px #fad7a1;" onclick="document.getElementById('input-foto-gal').click()">🖼️ Escolher da Galeria</button>
+            </div>
+            
             <div id="grade-fotos" class="grade-fotos"></div>
         </div>
     </div>
@@ -212,29 +284,34 @@
     <div id="modal-overlay">
         <div class="modal-conteudo">
             <h3 id="modal-titulo">Agendar Horário</h3>
-            <div id="lista-visitas-modal" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 10px; margin-bottom: 15px; max-height: 200px; overflow-y: auto;"></div>
-            <div style="background: #eaf2f8; padding: 15px; border-radius: 8px; border: 1px solid #d4e6f1;">
-                <label style="font-size: 13px; font-weight: bold; color: #2980b9;">➕ Adicionar Novo Visitante</label>
+            
+            <div id="lista-visitas-modal" class="lista-visitas-modal"></div>
+            
+            <div class="form-nova-visita">
+                <label>➕ Adicionar Novo Visitante</label>
                 <input type="text" id="novo-nome" placeholder="Nome">
                 <div class="linha-horario">
                     Das <input type="text" class="input-hora" id="novo-inicio" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"> 
                     às <input type="text" class="input-hora" id="novo-fim" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)">
                 </div>
-                <button onclick="adicionarNaListaModal()" style="background-color: #3498db; width:100%; padding:10px; color:white; border:none; border-radius:5px; font-weight:bold;">Confirmar Horário</button>
+                <p class="aviso-regra">⚠️ <strong>Regra:</strong> As Visitas são agendadas com Intervalo de 5 minutos.</p>
+                <button onclick="adicionarNaListaModal()" style="background-color: #3498db; box-shadow: 0 4px #2980b9; padding: 10px; margin-top: 10px; font-size: 15px; margin-bottom: 0; width: 100%;">Confirmar Horário</button>
             </div>
+            
             <div class="modal-botoes">
-                <button onclick="fecharModal()" style="background-color: #95a5a6; flex:1; padding:10px; color:white; border:none; border-radius:5px;">Sair</button>
-                <button onclick="salvarVisitasNuvem()" style="background-color: #2ecc71; flex:1; padding:10px; color:white; border:none; border-radius:5px;">Salvar Agenda</button>
+                <button class="btn-cancelar" onclick="fecharModal()">Cancelar (Sair)</button>
+                <button class="btn-salvar" onclick="salvarVisitasNuvem()">Salvar Agenda</button>
             </div>
         </div>
     </div>
 
-    <div id="tela-relatorio">
+<div id="tela-relatorio">
         <div class="no-print" style="display: flex; gap:10px; margin-bottom: 20px;">
-            <button onclick="fecharRelatorio()" style="background-color: #a29bfe; padding:10px; color:white; border:none; border-radius:5px; flex:1;">Voltar</button>
-            <button onclick="window.print()" style="background-color: #74b9ff; padding:10px; color:white; border:none; border-radius:5px; flex:1;">Imprimir</button>
+            <button onclick="fecharRelatorio()" style="background-color: #e8daef; color: #2c3e50; box-shadow: 0 5px #d7bde2; padding: 12px; border: none; border-radius: 6px; flex: 1; margin-bottom: 0;">🔙 Voltar</button>
+            
+            <button onclick="window.print()" style="background-color: #d6eaf8; color: #2c3e50; box-shadow: 0 5px #aed6f1; padding: 12px; border: none; border-radius: 6px; flex: 1; margin-bottom: 0;">🖨️ Imprimir</button>
         </div>
-        <h2 style="text-align:center; color:#2c3e50;">Relatório de Visitas</h2>
+        <h2 style="text-align:center; color:#2c3e50;">📖 Relatório de Visitas</h2>
         <table class="tabela-relatorio">
             <thead><tr><th>Dia</th><th>Visitas</th></tr></thead>
             <tbody id="corpo-tabela-relatorio"></tbody>
@@ -283,13 +360,16 @@
             input.type = input.type === 'password' ? 'text' : 'password';
         }
 
-        function fazerLogin() {
+function fazerLogin() {
             const nomeDigitado = document.getElementById('nome-visitante').value.trim();
             const senhaDigitada = document.getElementById('senha-acesso').value;
             
-            if ((senhaDigitada === '509' || senhaDigitada === '509') && nomeDigitado !== '') {
+            if ((senhaDigitada === '409' || senhaDigitada === '409') && nomeDigitado !== '') {
                 usuarioLogado = nomeDigitado;
-                document.getElementById('boas-vindas-texto').innerHTML = `Logado como: <strong>${usuarioLogado}</strong>`;
+                
+                // MENSAGEM NOVA AQUI:
+                document.getElementById('boas-vindas-texto').innerHTML = `Oi, <strong>${usuarioLogado}</strong> - grato por sua visita!!!`;
+                
                 document.getElementById('tela-login').style.display = 'none';
                 document.getElementById('tela-painel').style.display = 'block';
                 iniciarConexaoNuvem(); 
@@ -299,30 +379,25 @@
         }
 
         function sairDoSistema() {
-            window.location.reload(); // Recarrega para limpar tudo da memória por segurança
+            window.location.reload(); 
         }
 
         function iniciarConexaoNuvem() {
             atualizarPainel();
             if (!conexaoIniciada) {
-                // Agenda
                 db.ref('visitasDonaArlinda').on('value', (snapshot) => {
                     bancoDeDadosNuvem = snapshot.val() || {};
                     gerarDiasDaSemana(); 
                 });
-                // Texto Info
                 db.ref('obsDonaArlinda').on('value', (snapshot) => {
                     document.getElementById('texto-observacoes').value = snapshot.val() || '';
                 });
-                // Áudios Info
                 db.ref('audiosInfo').on('value', (snapshot) => {
-                    renderizarAudios(snapshot.val(), 'lista-audios-info');
+                    renderizarAudios(snapshot.val(), 'lista-audios-info', false, 'audiosInfo');
                 });
-                // Recadinhos
                 db.ref('recadinhosFofos').on('value', (snapshot) => {
-                    renderizarAudios(snapshot.val(), 'lista-audios-recadinhos', true);
+                    renderizarAudios(snapshot.val(), 'lista-audios-recadinhos', true, 'recadinhosFofos');
                 });
-                // Fotos
                 db.ref('muralFotos').on('value', (snapshot) => {
                     renderizarFotos(snapshot.val());
                 });
@@ -386,7 +461,7 @@
                 let htmlVisitas = '<div style="margin-top: 10px;">';
                 
                 if (listaVisitas.length === 0) {
-                    htmlVisitas += `<div class="horario-grupo cor-hora-0"><div style="text-align: center; color: white; padding: 5px; font-weight:bold;">Nenhuma Visita 😢</div></div>`;
+                    htmlVisitas += `<div class="horario-grupo cor-hora-0"><div style="text-align: center; color: white; padding: 5px; font-weight:bold; display: flex; align-items: center; justify-content: center; gap: 5px;">Nenhuma Visita <span style="font-size: 24px;">😢</span></div></div>`;
                 } else {
                     let eventos = [];
                     listaVisitas.forEach(v => {
@@ -411,12 +486,11 @@
                     blocos.forEach(bloco => {
                         let qtd = bloco.nomes.length;
                         let corClasse = qtd === 1 ? 'cor-hora-1' : (qtd === 2 ? 'cor-hora-2' : (qtd <= 4 ? 'cor-hora-3' : 'cor-hora-4'));
-                        let carinhas = '🙂'.repeat(Math.min(qtd, 6));
+                        let carinhas = '<span style="font-size: 24px; vertical-align: middle; margin-left: 5px;">' + '🙂'.repeat(Math.min(qtd, 6)) + '</span>';
                         
                         let horaI = minutosParaHora(bloco.inicio);
                         let horaF = minutosParaHora(bloco.fim);
                         
-                        // Verificador de expiração
                         let expirou = false;
                         let [hFim, mFim] = horaF.split(':').map(Number);
                         let dataHoraFim = new Date(diaInfo.objetoData.getTime());
@@ -495,10 +569,21 @@
         // ==========================================
         // TEXTO E WHATSAPP
         // ==========================================
-        function inserirDataObs() {
+function inserirDataObs() {
             const t = document.getElementById('texto-observacoes');
-            t.value += (t.value.trim() === '' ? '' : '\n\n') + `🗓️ === ${new Date().toLocaleDateString('pt-BR')} ===\n`;
-            t.focus(); 
+            const dataFormatada = `🗓️ ${new Date().toLocaleDateString('pt-BR')}\n`;
+            
+            // Se a caixa estiver vazia, apenas coloca a data
+            if (t.value.trim() === '') {
+                t.value = dataFormatada;
+            } else {
+                // Se já tiver texto, coloca a data no topo, dá um espaço, e mantém o texto antigo embaixo
+                t.value = dataFormatada + '\n' + t.value;
+            }
+            
+            t.focus();
+            // Coloca o cursor do teclado piscando logo depois da data inserida
+            t.setSelectionRange(dataFormatada.length, dataFormatada.length); 
         }
 
         function salvarObservacao() {
@@ -523,6 +608,49 @@
         }
 
         // ==========================================
+        // EXCLUSÃO DE MÍDIA (FOTOS E ÁUDIOS)
+        // ==========================================
+        async function deletarMidia(caminhoDB, idNode, urlArquivo, autorItem) {
+            const senhaMestreReal = "409"; 
+            
+            // Padroniza o nome para ignorar acentos e maiúsculas (júnior = junior = JUNIOR)
+            const nomeLogado = usuarioLogado.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const isJunior = nomeLogado === "junior";
+
+            // Verifica as permissões
+            if (usuarioLogado !== autorItem) {
+                if (isJunior) {
+                    const senha = prompt(`Júnior, digite a Senha Mestre para apagar o arquivo de ${autorItem}:`);
+                    if (senha !== senhaMestreReal) {
+                        if (senha !== null) alert("❌ Senha Mestre Incorreta!");
+                        return; // Para a execução se a senha for errada
+                    }
+                } else {
+                    alert("❌ Ação bloqueada! Você só pode apagar os seus próprios arquivos.");
+                    return; // Para a execução
+                }
+            } else {
+                // Se for o próprio autor logado, apenas pede confirmação
+                if (!confirm("Tem certeza que deseja apagar este arquivo permanentemente?")) return;
+            }
+
+            // 1. Exclui do Firebase Storage
+            try {
+                const refArquivo = firebase.storage().refFromURL(urlArquivo);
+                await refArquivo.delete();
+            } catch (error) {
+                console.warn("Aviso: Arquivo não encontrado no Storage ou já deletado.", error);
+            }
+
+            // 2. Exclui do Firebase Realtime Database
+            try {
+                await db.ref(caminhoDB).child(idNode).remove();
+            } catch (error) {
+                alert("Erro ao remover do banco de dados: " + error.message);
+            }
+        }
+
+        // ==========================================
         // ÁUDIO - GRAVAÇÃO E UPLOAD
         // ==========================================
         async function alternarGravacao(tipo) {
@@ -531,7 +659,6 @@
             const dbPath = tipo === 'info' ? 'audiosInfo' : 'recadinhosFofos';
 
             if (!estadoGravacao[tipo]) {
-                // INICIAR GRAVAÇÃO
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     mediaRecorder = new MediaRecorder(stream);
@@ -539,55 +666,60 @@
                     
                     mediaRecorder.ondataavailable = e => { if(e.data.size > 0) audioChunks.push(e.data); };
                     
-                    mediaRecorder.onstop = async () => {
-                        btn.innerHTML = '⏳ Enviando...';
+                    mediaRecorder.onstop = () => {
                         btn.classList.remove('gravando');
                         btn.disabled = true;
 
-                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const audioBlob = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
                         const nomeArquivo = `${Date.now()}_${usuarioLogado.replace(/[^a-zA-Z0-9]/g, '')}.webm`;
                         const pasta = tipo === 'info' ? 'audios_info' : 'audios_recados';
                         
-                        try {
-                            const snapshot = await storage.ref(`${pasta}/${nomeArquivo}`).put(audioBlob);
-                            const downloadURL = await snapshot.ref.getDownloadURL();
-                            
-                            // Salva no Database
-                            await db.ref(dbPath).push({
-                                nome: usuarioLogado,
-                                url: downloadURL,
-                                data: new Date().toLocaleString('pt-BR')
-                            });
-                            
-                            btn.innerHTML = tipo === 'info' ? '🎤 Gravar Áudio Médico' : '💖 Gravar Novo Recadinho';
-                            btn.disabled = false;
-                        } catch (error) {
-                            alert("Erro ao enviar áudio: " + error.message);
-                            btn.innerHTML = tipo === 'info' ? '🎤 Gravar Áudio Médico' : '💖 Gravar Novo Recadinho';
-                            btn.disabled = false;
-                        }
+                        const uploadTask = storage.ref(`${pasta}/${nomeArquivo}`).put(audioBlob);
+
+                        uploadTask.on('state_changed',
+                            (snapshot) => {
+                                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                btn.innerHTML = `⏳ Enviando... ${Math.round(progress)}%`;
+                            },
+                            (error) => {
+                                alert("Erro no Firebase Storage: " + error.message);
+                                btn.innerHTML = tipo === 'info' ? '🎤 Gravar Informações Relevantes' : '💖 Gravar Novo Recadinho';
+                                btn.disabled = false;
+                            },
+                            () => {
+                                uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                                    db.ref(dbPath).push({
+                                        nome: usuarioLogado,
+                                        url: downloadURL,
+                                        data: new Date().toLocaleString('pt-BR')
+                                    }).then(() => {
+                                        btn.innerHTML = tipo === 'info' ? '🎤 Gravar Áudio Médico' : '💖 Gravar Novo Recadinho';
+                                        btn.disabled = false;
+                                    });
+                                });
+                            }
+                        );
                     };
 
                     mediaRecorder.start();
                     estadoGravacao[tipo] = true;
-                    btn.innerHTML = '⏹️ Parar e Enviar Áudio';
+                    btn.innerHTML = '🔴 GRAVANDO... (Toque para Parar)';
                     btn.classList.add('gravando');
 
                 } catch (err) { alert("Erro ao acessar microfone. Verifique as permissões do navegador."); }
             } else {
-                // PARAR GRAVAÇÃO
                 mediaRecorder.stop();
                 estadoGravacao[tipo] = false;
             }
         }
 
-        function renderizarAudios(dados, containerId, fofo = false) {
+        function renderizarAudios(dados, containerId, fofo = false, dbPath) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
             if (!dados) return;
 
-            // Converter objeto em array para ordenar pelo mais recente
-            let audios = Object.keys(dados).map(k => dados[k]);
+            let audios = Object.keys(dados).map(k => ({ id: k, ...dados[k] }));
+            
             audios.sort((a, b) => {
                 let da = a.data.split(' ')[0].split('/').reverse().join('') + a.data.split(' ')[1];
                 let db = b.data.split(' ')[0].split('/').reverse().join('') + b.data.split(' ')[1];
@@ -595,21 +727,23 @@
             });
 
             audios.forEach(aud => {
-                let corNome = fofo ? '#e84393' : '#2980b9';
                 let icone = fofo ? '💌' : '🩺';
                 container.innerHTML += `
                 <div class="item-audio">
-                    <div class="item-audio-header">
-                        <span class="nome">${icone} ${fofo ? 'De:' : 'Por:'} <strong>${aud.nome}</strong></span>
-                        <span>${aud.data}</span>
+                    <div class="item-audio-header" style="align-items: center;">
+                        <div style="flex-grow: 1;">
+                            <span class="nome">${icone} ${fofo ? 'De:' : 'Por:'} <strong>${aud.nome}</strong></span>
+                            <span style="display:block; font-size:11px; font-weight:normal; margin-top:2px;">${aud.data}</span>
+                        </div>
+                        <button onclick="deletarMidia('${dbPath}', '${aud.id}', '${aud.url}', '${aud.nome}')" style="background:none; border:none; font-size:18px; cursor:pointer; color:#e74c3c; box-shadow:none; width:auto; padding:5px;" title="Apagar Áudio">🗑️</button>
                     </div>
-                    <audio controls src="${aud.url}"></audio>
+                    <audio controls src="${aud.url}" style="margin-top:5px;"></audio>
                 </div>`;
             });
         }
 
         // ==========================================
-        // FOTOS - UPLOAD E GALERIA
+        // FOTOS - UPLOAD E RENDERIZAÇÃO
         // ==========================================
         async function subirFotoGaleria(event) {
             const file = event.target.files[0];
@@ -617,24 +751,34 @@
 
             const nomeArquivo = `${Date.now()}_${usuarioLogado.replace(/[^a-zA-Z0-9]/g, '')}.jpg`;
             
-            // Botão indicando upload
             const divLoad = document.createElement('div');
-            divLoad.innerHTML = "<em>Enviando foto... ⏳</em>";
+            divLoad.id = 'loading-foto';
+            divLoad.innerHTML = "<em style='color:#8e44ad; font-size:13px; font-weight:bold;'>⏳ Enviando (0%)...</em>";
             document.getElementById('grade-fotos').prepend(divLoad);
 
-            try {
-                const snapshot = await storage.ref(`fotos/${nomeArquivo}`).put(file);
-                const downloadURL = await snapshot.ref.getDownloadURL();
-                
-                await db.ref('muralFotos').push({
-                    nome: usuarioLogado,
-                    url: downloadURL,
-                    data: new Date().toLocaleDateString('pt-BR')
-                });
-            } catch (error) {
-                alert("Erro ao enviar foto: " + error.message);
-            }
-            event.target.value = ''; // reseta o input
+            const uploadTask = storage.ref(`fotos/${nomeArquivo}`).put(file);
+
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    document.getElementById('loading-foto').innerHTML = `<em style='color:#8e44ad; font-size:13px; font-weight:bold;'>⏳ Enviando (${Math.round(progress)}%)...</em>`;
+                },
+                (error) => {
+                    alert("Erro ao enviar foto: " + error.message);
+                    document.getElementById('loading-foto').remove();
+                },
+                () => {
+                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                        db.ref('muralFotos').push({
+                            nome: usuarioLogado,
+                            url: downloadURL,
+                            data: new Date().toLocaleDateString('pt-BR')
+                        });
+                        document.getElementById('loading-foto').remove();
+                    });
+                }
+            );
+            event.target.value = ''; 
         }
 
         function renderizarFotos(dados) {
@@ -645,11 +789,12 @@
                 return;
             }
 
-            let fotos = Object.keys(dados).map(k => dados[k]).reverse(); // Mais novas primeiro
+            let fotos = Object.keys(dados).map(k => ({ id: k, ...dados[k] })).reverse(); 
 
             fotos.forEach(foto => {
                 container.innerHTML += `
                 <div class="cartao-foto">
+                    <button onclick="deletarMidia('muralFotos', '${foto.id}', '${foto.url}', '${foto.nome}')" style="position:absolute; top:5px; right:5px; background:rgba(255,255,255,0.85); border:none; border-radius:50%; cursor:pointer; font-size:14px; box-shadow:0 2px 4px rgba(0,0,0,0.3); width:30px; height:30px; display:flex; align-items:center; justify-content:center; z-index:10;" title="Apagar Foto">🗑️</button>
                     <a href="${foto.url}" target="_blank">
                         <img src="${foto.url}" alt="Foto com a Dona Arlinda">
                     </a>
@@ -688,5 +833,3 @@
     </script>
 </body>
 </html>
-
-
