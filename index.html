@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>Aplicativo da Dindinha!!!</title>
     
     <link rel="manifest" href="manifest.json">
@@ -12,7 +11,7 @@
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script> 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script> 
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,8 +28,8 @@
         #senha-acesso { padding-right: 45px; }
         .olhinho { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; user-select: none; }
         
-        button { width: 100%; padding: 12px; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; background-color: #3498db; box-shadow: 0 5px #2980b9; transition: all 0.1s; margin-bottom: 10px; }
-        button:active { box-shadow: 0 2px #2980b9; transform: translateY(3px); }
+        button { width: 100%; padding: 12px; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.1s; margin-bottom: 10px; }
+        button:active { transform: translateY(3px); }
         #mensagem-erro { color: #e74c3c; margin-top: 15px; display: none; font-weight: bold; }
 
         /* TELA DO PAINEL */
@@ -45,44 +44,17 @@
         .info-paciente p { color: #7f8c8d; font-size: 16px; margin-top: 5px; }
         .mensagem-boas-vindas { color: #27ae60; font-size: 15px; margin-top: 8px !important; }
         
-      .btn-sair { 
-            background-color: #ff6b6b; /* Vermelho mais claro e suave */
-            box-shadow: 0 5px #ee5253; /* Sombra acompanhando o tom */
-            width: auto; 
-            padding: 10px 25px; 
-            margin-bottom: 0; 
-            margin-left: auto;
-        }
+        .btn-sair { background-color: #ff6b6b; box-shadow: 0 5px #ee5253; width: auto; padding: 10px 25px; margin-bottom: 0; margin-left: auto; }
         
         /* Containers e Cartões Brancos */
         .cartao-branco { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .cartao-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: #2c3e50; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px;}
         .cartao-header h3 { display: flex; align-items: center; gap: 8px; }
 
-/* Grade Semanal e Navegação */
+        /* Grade Semanal */
         .navegacao-semana { display: flex; gap: 10px; align-items: center; justify-content: center; }
-        
-        .btn-nav { 
-            background-color: #ecf0f1; 
-            color: #2c3e50; 
-            box-shadow: 0 4px #bdc3c7; 
-            padding: 8px 5px; 
-            font-size: 14px; 
-            margin: 0; 
-            flex: 1; /* Esta linha faz todos os botões terem a mesma largura */
-            min-width: 95px; /* Garante que não fiquem muito espremidos no celular */
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        /* Botão Hoje com um azul mais claro e harmonioso */
-        .btn-hoje { 
-            background-color: #3498db; 
-            color: white; 
-            box-shadow: 0 4px #2980b9; 
-        }
+        .btn-nav { background-color: #ecf0f1; color: #2c3e50; box-shadow: 0 4px #bdc3c7; padding: 8px 5px; font-size: 14px; margin: 0; flex: 1; min-width: 95px; text-align: center; display: flex; justify-content: center; align-items: center; }
+        .btn-hoje { background-color: #3498db; color: white; box-shadow: 0 4px #2980b9; }
         
         .grade-dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
         .dia-coluna { display: flex; flex-direction: column; gap: 10px; }
@@ -90,7 +62,6 @@
         .dia-titulo span { display: block; font-size: 12px; color: #7f8c8d; font-weight: normal; }
         
         .turno-bloco { padding: 15px 10px; border-radius: 8px; text-align: center; font-weight: bold; color: white; cursor: pointer; font-size: 14px; box-shadow: 0 5px rgba(0,0,0,0.3); transition: all 0.1s; min-height: 120px; }
-        .turno-bloco:active { box-shadow: 0 2px rgba(0,0,0,0.3); transform: translateY(3px); }
         .turno-unico { background-color: #34495e; border: 2px solid #2c3e50; } 
 
         .horario-grupo { background: rgba(255, 255, 255, 0.95); border-radius: 6px; padding: 6px; margin-bottom: 10px; text-align: left; box-shadow: 0 3px 6px rgba(0,0,0,0.15); }
@@ -105,12 +76,14 @@
 
         /* Observações e Rodapé */
         textarea { width: 100%; height: 120px; padding: 12px; border: 1px solid #ccc; border-radius: 6px; resize: none; font-family: inherit; margin-bottom: 15px; line-height: 1.5; }
+        .texto-justificado { text-align: justify; }
+
         .botoes-rodape { display: flex; gap: 10px; flex-wrap: wrap; }
         .botoes-rodape button { flex: 1; margin-bottom: 0; min-width: 150px; } 
 
         /* GRAVAÇÃO DE ÁUDIO & MIDIA */
         .btn-gravar { background-color: #e74c3c; box-shadow: 0 5px #c0392b; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .btn-gravar.gravando { background-color: #8c1e12; box-shadow: 0 2px #5e1109; transform: translateY(3px); }
+        .btn-gravar.gravando { background-color: #8c1e12; box-shadow: 0 2px #5e1109; }
         
         .lista-audios { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
         .item-audio { background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #dee2e6; }
@@ -146,47 +119,38 @@
 
         .modal-botoes { display: flex; gap: 10px; margin-top: 20px; }
         .btn-salvar { background-color: #2ecc71; box-shadow: 0 5px #27ae60; flex: 1; margin-bottom: 0; } 
-        .btn-salvar:active { box-shadow: 0 2px #27ae60; }
         .btn-cancelar { background-color: #95a5a6; box-shadow: 0 5px #7f8c8d; flex: 1; margin-bottom: 0;} 
-        .btn-cancelar:active { box-shadow: 0 2px #7f8c8d; }
 
-        /* TELA DE RELATÓRIO */
-        #tela-relatorio { display: none; padding: 40px; background: white; width: 98%; max-width: 1400px; margin: 20px auto; border-radius: 12px; }
+        /* TELA DE RELATÓRIO E ABAS */
+        #tela-relatorio, #tela-relatorio-alimentacao, #tela-relatorio-medicacoes, #aba-alimentacao, #aba-medicacoes { display: none; padding: 30px; background: white; width: 98%; max-width: 1200px; margin: 20px auto; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
         .tabela-relatorio { width: 100%; border-collapse: collapse; margin-top: 20px;}
         .tabela-relatorio th, .tabela-relatorio td { border: 1px solid #bdc3c7; padding: 10px; text-align: left;}
+
+        /* BOTÕES PASTÉIS DAS LISTAS */
+        .btn-acao-lista { border: none; border-radius: 4px; padding: 5px 8px; cursor: pointer; font-size: 14px; box-shadow: 0 2px rgba(0,0,0,0.1); width: auto; margin: 0; }
+        .btn-editar-pastel { background: #fcf3cf; color: #d4ac0d; border: 1px solid #f9e79f; }
+        .btn-repetir-pastel { background: #d6eaf8; color: #2980b9; border: 1px solid #aed6f1; }
+        .btn-apagar-pastel { background: #fadbd8; color: #c0392b; border: 1px solid #f5b7b1; }
 
         @media (max-width: 768px) {
             .grade-dias { grid-template-columns: 1fr; }
             .botoes-rodape { flex-direction: column; }
             .botoes-rodape button { width: 100%; }
             .cartao-header { flex-direction: column; text-align: center; }
+            .grid-alimentacao { grid-template-columns: 1fr !important; }
         }
         
-@media print {
-            /* Zeramos a margem da impressora para nós mesmos controlarmos */
+       /* AJUSTE PARA IMPRESSÃO PERFEITA DOS RELATÓRIOS */
+        @media print {
             @page { margin: 0; }
-            
             body { background: white; margin: 0; padding: 0; }
-            .no-print, #tela-painel, #tela-login { display: none !important; }
+            .no-print, #tela-painel, #tela-login, #aba-alimentacao, #aba-medicacoes { display: none !important; }
+            #tela-relatorio, #tela-relatorio-alimentacao, #tela-relatorio-medicacoes { width: 95% !important; margin: 1cm auto !important; padding: 0 !important; box-shadow: none; border: none; }
             
-            #tela-relatorio { 
-                display: block !important; 
-                width: 85% !important; 
-                /* AQUI ESTÁ O SEGREDO! A ordem é: Cima | Direita | Baixo | Esquerda */
-                margin: 2cm auto 2cm auto !important; 
-                padding: 0 !important;
-            }
-
-            .tabela-relatorio th, .tabela-relatorio td {
-                padding: 8px;
-                font-size: 14px;
-            }
-            
-            #obs-relatorio-texto {
-                font-size: 14px;
-            }
+            /* Evita que títulos e datas fiquem sozinhos e quebrem blocos no meio */
+            h2, h3, h4, p { page-break-after: avoid; break-after: avoid; }
+            table, tr, .cartao-branco, .texto-justificado { page-break-inside: avoid; break-inside: avoid; }
         }
-
     </style>
 </head>
 <body>
@@ -195,19 +159,36 @@
         <div class="cartao-login">
             <h2>Controle de Visitas</h2>
             <p>Paciente: Arlinda Batista Passos</p>
-            <div class="input-grupo"><input type="text" id="nome-visitante" placeholder="Seu Nome" required></div>
+            <div class="input-grupo"><input type="text" id="nome-visitante" spellcheck="true" lang="pt-BR" placeholder="Seu Nome" required></div>
             <div class="input-grupo">
                 <input type="password" id="senha-acesso" placeholder="Senha de Acesso" required>
                 <span class="olhinho" onclick="toggleSenha()">👁️</span>
             </div>
             
-            <button onclick="fazerLogin()" style="background-color: #d6eaf8; color: #2c3e50; box-shadow: 0 5px #aed6f1; padding: 12px; border: none; border-radius: 6px; width: 100%; font-size: 16px; font-weight: bold; margin-bottom: 10px;">🔑 Entrar</button>
-            
+            <button onclick="fazerLogin()" style="background-color: #d6eaf8; color: #2c3e50; box-shadow: 0 5px #aed6f1;">🔑 Entrar</button>
             <p id="mensagem-erro">Senha incorreta ou nome em branco!</p>
         </div>
     </div>
 
-<div id="tela-painel">
+    <div id="modal-boas-vindas" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(5px);">
+        <div style="background: white; border-radius: 20px; padding: 25px; text-align: center; max-width: 350px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; border: 4px solid #fadbd8; margin-top: 40px;">
+            <img src="mae.jpg" alt="Foto Dona Arlinda" onerror="this.src='https://via.placeholder.com/90?text=Sem+Foto'" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 5px solid white; position: absolute; top: -60px; left: 50%; transform: translateX(-50%); background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+            
+            <h2 style="color: #d63031; margin: 55px 0 10px; font-size: 24px;">Bem-vindo(a)! ❤️</h2>
+            <p style="color: #2c3e50; font-size: 15px; margin-bottom: 20px; line-height: 1.4;">Muito obrigado por tirar um tempinho para visitar a Dindinha. O seu carinho e a sua presença fazem toda a diferença no dia dela!</p>
+            
+            <div style="background: #fdf2e9; border-radius: 12px; padding: 15px; margin-bottom: 25px; border: 1px dashed #fad7a1;">
+                <h4 style="margin: 0 0 10px; color: #e67e22; font-size: 14px;">🌟 Quem já esteve com ela hoje:</h4>
+                <div id="lista-visitantes-hoje" style="font-size: 14px; color: #34495e; max-height: 120px; overflow-y: auto; text-align: left; padding-left: 10px; line-height: 1.6;">
+                    </div>
+            </div>
+            
+            <button onclick="fecharBoasVindas()" style="background-color: #fadbd8; color: #c0392b; box-shadow: 0 5px #f5b7b1; padding: 12px 25px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer;">✨ Continuar para a Agenda</button>
+        </div>
+    </div>
+
+    <div id="tela-painel">
+        
         <div class="cabecalho-paciente cartao-branco">
             <div class="foto-container">
                 <img src="mae.jpg" alt="Foto Dona Arlinda" class="foto-paciente" onerror="this.src='https://via.placeholder.com/90?text=Sem+Foto'">
@@ -217,38 +198,46 @@
                 <p><strong>Rua:</strong> Água Marinha, 409</p>
                 <p id="boas-vindas-texto" class="mensagem-boas-vindas"></p>
             </div>
-            
-            <button class="btn-sair" onclick="sairDoSistema()" style="background-color: #fadbd8; color: #2c3e50; box-shadow: 0 5px #f5b7b1; border: none; font-weight: bold;">👋 Sair</button>
+            <button class="btn-sair" onclick="sairDoSistema()" style="background-color: #fadbd8; color: #c0392b; box-shadow: 0 5px #f5b7b1;">👋 Sair</button>
         </div>
 
-<div class="cartao-branco">
-            <div class="cartao-header" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-                <h3 style="margin: 0; font-size: 1.1rem;">🗓️ Agenda de Visitas</h3>
-                <div class="navegacao-semana" style="display: flex; justify-content: center; gap: 8px; width: 100%;">
-                    
-                    <button class="btn-nav" onclick="mudarSemana(-7)" style="padding: 6px 10px; font-size: 0.85rem;">⬅️ Ant.</button>
-                    
-                    <button class="btn-nav btn-hoje" onclick="irParaHoje()" style="background-color: #d6eaf8; color: #2c3e50; box-shadow: 0 4px #aed6f1; border: none; font-weight: bold; padding: 6px 15px; font-size: 0.85rem;">Hoje</button>
-                    
-                    <button class="btn-nav" onclick="mudarSemana(7)" style="padding: 6px 10px; font-size: 0.85rem;">Próx. ➡️</button>
-                    
+       
+
+
+
+
+
+ <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+            <button onclick="abrirAlimentacao()" style="background-color: #fdebd0; color: #d35400; box-shadow: 0 5px #fad7a1; flex: 1; font-size: 16px; margin-bottom: 0; display: flex; justify-content: center; align-items: center; gap: 8px;">🍲 Alimentação da Dindinha</button>
+            <button onclick="abrirMedicacoes()" style="background-color: #d5f5e3; color: #27ae60; box-shadow: 0 5px #a9dfbf; flex: 1; font-size: 16px; margin-bottom: 0; display: flex; justify-content: center; align-items: center; gap: 8px;">💊 Medicações da Dindinha</button>
+        </div>
+
+        <div class="cartao-branco">
+            <div class="cartao-header" style="flex-direction: column; align-items: center;">
+                <h3 style="margin: 0;">🗓️ Agenda de Visitas</h3>
+                <div class="navegacao-semana">
+                    <button class="btn-nav" onclick="mudarSemana(-7)" style="background-color: #f4f6f7; color: #2c3e50; box-shadow: 0 5px #d5dbdb;">⬅️ Ant.</button>
+                    <button class="btn-nav btn-hoje" onclick="irParaHoje()" style="background-color: #85c1e9; color: white; box-shadow: 0 5px #5dade2;">Hoje</button>
+                    <button class="btn-nav" onclick="mudarSemana(7)" style="background-color: #f4f6f7; color: #2c3e50; box-shadow: 0 5px #d5dbdb;">Próx. ➡️</button>
                 </div>
             </div>
             <div class="grade-dias" id="grade-dias"></div>
         </div>
 
-       <div class="cartao-branco">
+        <div class="cartao-branco">
             <div class="cartao-header" style="border-bottom:none; margin-bottom: 5px;">
                 <h3>🩺 Informações Relevantes</h3>
-<button onclick="inserirDataObs()" style="background-color: #fdebd0; color: #2c3e50; box-shadow: 0 4px #fad7a1; border: none; width: auto; padding: 6px 15px; margin: 0; font-size: 13px; font-weight: bold;">🗓️ Inserir Data / Texto</button>
+                <div style="display: flex; gap: 5px;">
+                    <button id="btn-inserir-data-obs" onclick="inserirDataObs()" style="background-color: #fdebd0; color: #2c3e50; box-shadow: 0 4px #fad7a1; width: auto; padding: 6px 15px; margin: 0; font-size: 13px;">🗓️ Inserir Data</button>
+                    <button id="btn-editar-obs" onclick="editarCaixaObs()" style="display: none; background-color: #d6eaf8; color: #2980b9; box-shadow: 0 4px #aed6f1; width: auto; padding: 6px 15px; margin: 0; font-size: 13px;">✏️ Editar</button>
+                </div>
             </div>
-            <textarea id="texto-observacoes" placeholder="Digite informações médicas, dieta, estado geral..."></textarea>
+            <textarea id="texto-observacoes" spellcheck="true" lang="pt-BR" class="texto-justificado" placeholder="🔒 Travado! Clique no botão '🗓️ Inserir Data' para liberar e digitar..." disabled onblur="travarCaixaObs()"></textarea>
             
             <div class="botoes-rodape" style="margin-bottom: 15px;">
                 <button onclick="salvarObservacao()" style="background-color: #d5f5e3; color: #2c3e50; box-shadow: 0 5px #a9dfbf;">💾 Salvar Texto</button>
-                <button id="btn-gravar-info" class="btn-gravar" onclick="alternarGravacao('info')" style="background-color: #fadbd8; color: #2c3e50; box-shadow: 0 5px #f5b7b1;">🎤 Gravar Informações Relevantes</button>
+                <button id="btn-gravar-info" class="btn-gravar" onclick="alternarGravacao('info')" style="background-color: #fadbd8; color: #2c3e50; box-shadow: 0 5px #f5b7b1;">🎤 Gravar Áudio</button>
             </div>
-            
             <div id="lista-audios-info" class="lista-audios"></div>
             
             <div class="botoes-rodape" style="margin-top: 20px; border-top: 1px solid #ecf0f1; padding-top: 15px;">
@@ -257,10 +246,10 @@
             </div>
         </div>
 
-<div class="cartao-branco" style="border: 2px solid #fd79a8; background: #fff0f6;">
-            <div class="cartao-header" style="border-color: #fab1a0;">
-                <h3 style="color: #d63031;">💌 Recadinhos para a Dindinha</h3>
-                <p style="font-size: 13px; color: #e17055;">Deixe uma mensagem de voz carinhosa para ela ouvir!</p>
+        <div class="cartao-branco" style="border: 2px solid #fd79a8; background: #fff0f6;">
+            <div class="cartao-header" style="border-color: #fab1a0; flex-direction: column; justify-content: center;">
+                <h2 style="color: #d63031; margin: 0;">💌 RECADINHOS PARA A DINDINHA!</h2>
+                <p style="font-size: 13px; color: #e17055; margin-top: 5px;">Deixe uma mensagem de voz carinhosa para ela ouvir!</p>
             </div>
             <button id="btn-gravar-recado" class="btn-gravar" style="background-color: #fadbd8; color: #2c3e50; box-shadow: 0 5px #f5b7b1;" onclick="alternarGravacao('recadinho')">🎤💖 Gravar Novo Recadinho</button>
             <div id="lista-audios-recadinhos" class="lista-audios"></div>
@@ -271,34 +260,160 @@
                 <h3>📸 Mural de Fotos com a Dindinha</h3>
                 <p style="font-size: 13px; color: #7f8c8d;">Registre e eternize as visitas!!!</p>
             </div>
-            
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <input type="file" id="input-foto-cam" accept="image/*" capture="environment" style="display:none" onchange="subirFotoGaleria(event)">
                 <input type="file" id="input-foto-gal" accept="image/*" style="display:none" onchange="subirFotoGaleria(event)">
-                
                 <button class="btn-foto" style="flex:1; background-color: #e8daef; color: #2c3e50; box-shadow: 0 5px #d7bde2;" onclick="document.getElementById('input-foto-cam').click()">📷 Abrir Câmera</button>
                 <button class="btn-foto" style="flex:1; background-color: #fdebd0; color: #2c3e50; box-shadow: 0 5px #fad7a1;" onclick="document.getElementById('input-foto-gal').click()">🖼️ Escolher da Galeria</button>
             </div>
-            
             <div id="grade-fotos" class="grade-fotos"></div>
         </div>
+
+    </div> 
+    
+    <div id="aba-alimentacao">
+        <h2 style="text-align: center; color: #d35400; margin-bottom: 5px; font-size: 26px;">🍲 Alimentação da Dindinha</h2>
+        <p style="text-align: center; font-weight: bold; margin-bottom: 25px; color: #34495e; font-size: 16px;" id="data-alimentacao-hoje"></p>
+
+        <div class="grid-alimentacao" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+            <div style="background: #fef9e7; border: 2px solid #f1c40f; border-radius: 10px; padding: 10px;">
+                <h3 style="font-size: 16px; text-align: center; color: #d4ac0d; margin-bottom: 5px;">Café da Manhã ☕</h3>
+                <div id="lista-cafe" style="min-height: 25px;"></div>
+                <div style="display: flex; gap: 5px; margin-top: 5px;">
+                    <input type="text" id="add-cafe" spellcheck="true" lang="pt-BR" placeholder="Adicionar alimento..." style="flex: 1; padding: 8px; border: 1px solid #f1c40f; border-radius: 6px; font-size: 14px; outline: none;">
+                    <button onclick="adicionarRefeicaoDireto('cafe', 'add-cafe')" style="background: #fcf3cf; color: #d4ac0d; border: none; padding: 8px 12px; border-radius: 6px; box-shadow: 0 3px #f4d03f; font-size: 14px; width: auto; margin: 0;">➕</button>
+                </div>
+            </div>
+
+            <div style="background: #fef9e7; border: 2px solid #f1c40f; border-radius: 10px; padding: 10px;">
+                <h3 style="font-size: 16px; text-align: center; color: #d4ac0d; margin-bottom: 5px;">Almoço 🍛</h3>
+                <div id="lista-almoco" style="min-height: 25px;"></div>
+                <div style="display: flex; gap: 5px; margin-top: 5px;">
+                    <input type="text" id="add-almoco" spellcheck="true" lang="pt-BR" placeholder="Adicionar alimento..." style="flex: 1; padding: 8px; border: 1px solid #f1c40f; border-radius: 6px; font-size: 14px; outline: none;">
+                    <button onclick="adicionarRefeicaoDireto('almoco', 'add-almoco')" style="background: #fcf3cf; color: #d4ac0d; border: none; padding: 8px 12px; border-radius: 6px; box-shadow: 0 3px #f4d03f; font-size: 14px; width: auto; margin: 0;">➕</button>
+                </div>
+            </div>
+
+            <div style="background: #fbeee6; border: 2px solid #d35400; border-radius: 10px; padding: 10px;">
+                <h3 style="font-size: 16px; text-align: center; color: #a04000; margin-bottom: 5px;">Café da Tarde 🍰</h3>
+                <div id="lista-tarde" style="min-height: 25px;"></div>
+                <div style="display: flex; gap: 5px; margin-top: 5px;">
+                    <input type="text" id="add-tarde" spellcheck="true" lang="pt-BR" placeholder="Adicionar alimento..." style="flex: 1; padding: 8px; border: 1px solid #d35400; border-radius: 6px; font-size: 14px; outline: none;">
+                    <button onclick="adicionarRefeicaoDireto('tarde', 'add-tarde')" style="background: #fadbd8; color: #c0392b; border: none; padding: 8px 12px; border-radius: 6px; box-shadow: 0 3px #f1948a; font-size: 14px; width: auto; margin: 0;">➕</button>
+                </div>
+            </div>
+
+            <div style="background: #fdedec; border: 2px solid #e74c3c; border-radius: 10px; padding: 10px;">
+                <h3 style="font-size: 16px; text-align: center; color: #b03a2e; margin-bottom: 5px;">Janta 🍲</h3>
+                <div id="lista-janta" style="min-height: 25px;"></div>
+                <div style="display: flex; gap: 5px; margin-top: 5px;">
+                    <input type="text" id="add-janta" spellcheck="true" lang="pt-BR" placeholder="Adicionar alimento..." style="flex: 1; padding: 8px; border: 1px solid #e74c3c; border-radius: 6px; font-size: 14px; outline: none;">
+                    <button onclick="adicionarRefeicaoDireto('janta', 'add-janta')" style="background: #fadbd8; color: #c0392b; border: none; padding: 8px 12px; border-radius: 6px; box-shadow: 0 3px #f1948a; font-size: 14px; width: auto; margin: 0;">➕</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+            <div style="background: #eaf2f8; padding: 20px; border-radius: 10px; border: 1px solid #d4e6f1;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="font-size: 18px; color: #2980b9; margin: 0;">O que há na geladeira? 🧊</h3>
+                    <button onclick="repetirGeladeiraOntem()" style="background: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; box-shadow: 0 2px #2980b9; width: auto; margin: 0;">🔄 Copiar de Ontem</button>
+                </div>
+                
+                <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px dashed #aed6f1; padding-bottom: 15px;">
+                    <button onclick="mudarDiaGeladeira(-1)" style="background: #d6eaf8; color: #2980b9; border: none; padding: 8px 12px; border-radius: 6px; box-shadow: 0 2px #aed6f1; width: auto; margin: 0; font-size: 12px;">⬅️ Ant.</button>
+                    <div id="data-geladeira-tela" style="color: #2c3e50; text-align: center; font-size: 14px; font-weight: bold; min-width: 120px;">Hoje</div>
+                    <button onclick="mudarDiaGeladeira(1)" style="background: #d6eaf8; color: #2980b9; border: none; padding: 8px 12px; border-radius: 6px; box-shadow: 0 2px #aed6f1; width: auto; margin: 0; font-size: 12px;">Próx. ➡️</button>
+                </div>
+
+                <div id="lista-geladeira" style="margin-bottom: 10px;"></div>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="input-geladeira" spellcheck="true" lang="pt-BR" placeholder="Digitar item e adicionar..." style="flex: 1; padding: 10px; border: 1px solid #aed6f1; border-radius: 6px; font-size: 14px; outline: none;">
+                    <button onclick="adicionarItem('geladeira', 'input-geladeira')" style="background: #d6eaf8; color: #2980b9; border: none; border-radius: 6px; padding: 10px 15px; box-shadow: 0 3px #aed6f1; font-size: 14px; width: auto; margin: 0;">➕</button>
+                </div>
+            </div>
+
+            <div style="background: #fdedec; padding: 20px; border-radius: 10px; border: 1px solid #fadbd8;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="font-size: 18px; color: #c0392b; margin: 0;">O que precisa comprar? 🛒</h3>
+                </div>
+                
+                <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px dashed #f5b7b1; padding-bottom: 15px;">
+                    <button onclick="mudarDiaCompras(-1)" style="background: #fadbd8; color: #c0392b; border: none; padding: 8px 12px; border-radius: 6px; box-shadow: 0 2px #f1948a; width: auto; margin: 0; font-size: 12px;">⬅️ Ant.</button>
+                    <div id="data-compras-tela" style="color: #2c3e50; text-align: center; font-size: 14px; font-weight: bold; min-width: 120px;">Hoje</div>
+                    <button onclick="mudarDiaCompras(1)" style="background: #fadbd8; color: #c0392b; border: none; padding: 8px 12px; border-radius: 6px; box-shadow: 0 2px #f1948a; width: auto; margin: 0; font-size: 12px;">Próx. ➡️</button>
+                </div>
+
+                <div id="lista-compras" style="margin-bottom: 10px;"></div>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="input-compras" spellcheck="true" lang="pt-BR" placeholder="Digitar item para lista..." style="flex: 1; padding: 10px; border: 1px solid #f5b7b1; border-radius: 6px; font-size: 14px; outline: none;">
+                    <button onclick="adicionarItem('compras', 'input-compras')" style="background: #fadbd8; color: #c0392b; border: none; border-radius: 6px; padding: 10px 15px; box-shadow: 0 3px #f1948a; font-size: 14px; width: auto; margin: 0;">➕</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="no-print" style="display: flex; gap: 15px; margin-top: 25px; border-top: 2px solid #ecf0f1; padding-top: 20px;">
+            <button onclick="fecharAlimentacao()" style="background-color: #e8daef; color: #2c3e50; box-shadow: 0 5px #d7bde2; padding: 15px; flex: 1; margin: 0;">🔙 Voltar ao Início</button>
+            <button onclick="abrirRelatorioAlimentacao()" style="background-color: #d6eaf8; color: #2c3e50; box-shadow: 0 5px #aed6f1; padding: 15px; flex: 1; margin: 0;">📄 Gerar Relatório Alimentação</button>
+        </div>
     </div>
+
+   
+
+<div id="aba-medicacoes" style="background-color: #eafaf1; border: 3px solid #2ecc71;">
+        <h2 style="text-align: center; color: black; margin-bottom: 5px; font-size: 26px;">💊 Medicações da Dindinha</h2>
+        
+        <div style="text-align: center; margin-top: 5px; margin-bottom: 10px;">
+            <button onclick="repetirMedicacoesOntem()" style="background: #27ae60; color: white; border: none; padding: 6px 15px; border-radius: 6px; font-size: 13px; box-shadow: 0 3px #1e8449; width: auto; margin: 0;">🔄 Copiar de Ontem</button>
+        </div>
+
+        <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 25px; margin-top: 15px;">
+            <button onclick="mudarDiaMedicacao(-1)" style="background: #d5f5e3; color: #27ae60; border: none; padding: 10px 20px; border-radius: 6px; box-shadow: 0 4px #a9dfbf; width: auto; margin: 0;">⬅️ Ant.</button>
+            <h3 id="data-medicacoes-tela" style="color: #2c3e50; text-align: center; margin: 0; min-width: 200px; line-height: 1.2;">Hoje</h3>
+            <button onclick="mudarDiaMedicacao(1)" style="background: #d5f5e3; color: #27ae60; border: none; padding: 10px 20px; border-radius: 6px; box-shadow: 0 4px #a9dfbf; width: auto; margin: 0;">Próx. ➡️</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 5px; background: #a9dfbf; color: #1e8449; font-weight: bold; padding: 12px; border-radius: 8px; font-size: 14px; text-align: center; margin-bottom: 10px; box-shadow: 0 3px rgba(0,0,0,0.1);">
+            <div style="text-align: left; padding-left: 5px;">Medicamento</div>
+            <div>Dosagem</div>
+            <div>Horários</div>
+            <div>Ações</div>
+        </div>
+
+        <div id="lista-medicacoes-dinamica" style="min-height: 60px;"></div>
+        
+        <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #a9dfbf; margin-top: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <h4 style="margin-bottom: 10px; color: #27ae60; text-align: center;">➕ Adicionar Nova Medicação Rápida</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <input type="text" id="add-med-nome" spellcheck="true" lang="pt-BR" placeholder="Nome (Ex: Dipirona)" style="flex: 2; min-width: 130px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none;">
+                <input type="text" id="add-med-dosagem" spellcheck="true" lang="pt-BR" placeholder="Dosagem (Ex: 1 comp.)" style="flex: 1; min-width: 90px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none;">
+                <input type="text" id="add-med-horario" placeholder="Horário (Ex: 08:00)" style="flex: 1; min-width: 90px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none;">
+            </div>
+            <button onclick="adicionarMedicacaoDireto()" style="width: 100%; margin-top: 15px; background-color: #a9dfbf; color: #1e8449; border: none; border-radius: 6px; box-shadow: 0 4px #7dcea0; padding: 12px; font-weight: bold; margin-bottom: 0;">Salvar na Lista</button>
+        </div>
+
+        <div class="no-print" style="display: flex; gap:15px; margin-top: 25px; border-top: 2px solid #a9dfbf; padding-top: 20px;">
+            <button onclick="fecharMedicacoes()" style="background-color: #e8daef; color: #2c3e50; box-shadow: 0 5px #d7bde2; padding: 15px; flex: 1; margin: 0;">🔙 Voltar ao Início</button>
+            <button onclick="abrirRelatorioMedicacoes()" style="background-color: #d6eaf8; color: #2c3e50; box-shadow: 0 5px #aed6f1; padding: 15px; flex: 1; margin: 0;">📄 Gerar Relatório Medicações</button>
+        </div>
+    </div>
+
 
     <div id="modal-overlay">
         <div class="modal-conteudo">
             <h3 id="modal-titulo">Agendar Horário</h3>
-            
             <div id="lista-visitas-modal" class="lista-visitas-modal"></div>
             
             <div class="form-nova-visita">
                 <label>➕ Adicionar Novo Visitante</label>
-                <input type="text" id="novo-nome" placeholder="Nome">
+                <input type="text" id="novo-nome" spellcheck="true" lang="pt-BR" placeholder="Nome">
                 <div class="linha-horario">
                     Das <input type="text" class="input-hora" id="novo-inicio" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)"> 
                     às <input type="text" class="input-hora" id="novo-fim" placeholder="00:00" maxlength="5" inputmode="numeric" oninput="formatarHora(this)">
-                </div>
-                <p class="aviso-regra">⚠️ <strong>Regra:</strong> As Visitas são agendadas com Intervalo de 5 minutos.</p>
-                <button onclick="adicionarNaListaModal()" style="background-color: #3498db; box-shadow: 0 4px #2980b9; padding: 10px; margin-top: 10px; font-size: 15px; margin-bottom: 0; width: 100%;">Confirmar Horário</button>
+</div>
+                <p class="aviso-regra">⚠️ <strong>Regra:</strong> As Visitas agora podem ser agendadas a cada 1 minuto.</p>
+                <button onclick="adicionarNaListaModal()" style="background-color: #3498db; box-shadow: 0 4px #2980b9; padding: 10px; margin-top: 10px; font-size: 15px; margin-bottom: 0;">Confirmar Horário</button>
             </div>
             
             <div class="modal-botoes">
@@ -307,12 +422,10 @@
             </div>
         </div>
     </div>
-
-<div id="tela-relatorio">
+    <div id="tela-relatorio">
         <div class="no-print" style="display: flex; gap:10px; margin-bottom: 20px;">
-            <button onclick="fecharRelatorio()" style="background-color: #e8daef; color: #2c3e50; box-shadow: 0 5px #d7bde2; padding: 12px; border: none; border-radius: 6px; flex: 1; margin-bottom: 0;">🔙 Voltar</button>
-            
-            <button onclick="window.print()" style="background-color: #d6eaf8; color: #2c3e50; box-shadow: 0 5px #aed6f1; padding: 12px; border: none; border-radius: 6px; flex: 1; margin-bottom: 0;">🖨️ Imprimir</button>
+            <button onclick="fecharRelatorio()" style="background-color: #e8daef; color: #2c3e50; box-shadow: 0 5px #d7bde2; padding: 12px; margin: 0;">🔙 Voltar</button>
+            <button onclick="window.print()" style="background-color: #d6eaf8; color: #2c3e50; box-shadow: 0 5px #aed6f1; padding: 12px; margin: 0;">🖨️ Imprimir</button>
         </div>
         <h2 style="text-align:center; color:#2c3e50;">📖 Relatório de Visitas</h2>
         <table class="tabela-relatorio">
@@ -320,13 +433,47 @@
             <tbody id="corpo-tabela-relatorio"></tbody>
         </table>
         <h3 style="margin-top:20px;">Informações Relevantes</h3>
-        <div id="obs-relatorio-texto" style="background:#f9f9f9; padding:15px; border-left:4px solid #3498db;"></div>
+        <div id="obs-relatorio-texto" class="texto-justificado" style="background:#f9f9f9; padding:15px; border-left:4px solid #3498db;"></div>
     </div>
 
+    <div id="tela-relatorio-alimentacao">
+        <div class="no-print" style="display: flex; gap:10px; margin-bottom: 20px;">
+            <button onclick="fecharRelatorioAlimentacao()" style="background-color: #e8daef; color: #2c3e50; box-shadow: 0 5px #d7bde2; padding: 12px; margin: 0;">🔙 Voltar</button>
+            <button onclick="window.print()" style="background-color: #d6eaf8; color: #2c3e50; box-shadow: 0 5px #aed6f1; padding: 12px; margin: 0;">🖨️ Imprimir Alimentação</button>
+        </div>
+        <h2 style="text-align:center; color:#d35400;">🍲 Relatório de Alimentação</h2>
+        <p style="text-align:center; color:#7f8c8d; margin-bottom: 20px; font-weight:bold;" id="data-relatorio-alimentacao"></p>
+        <table class="tabela-relatorio">
+            <thead><tr><th style="width: 30%;">Refeição</th><th>Alimentos Consumidos</th></tr></thead>
+            <tbody id="corpo-tabela-alimentacao"></tbody>
+        </table>
+        <h3 style="margin-top:20px; color:#2980b9;">🧊 O que há na Geladeira?</h3>
+        <div id="relatorio-geladeira" class="texto-justificado" style="background:#f9f9f9; padding:15px; border-left:4px solid #3498db; margin-bottom: 15px; line-height: 1.6;"></div>
+        <h3 style="margin-top:10px; color:#c0392b;">🛒 O que precisa Comprar?</h3>
+        <div id="relatorio-compras" class="texto-justificado" style="background:#f9f9f9; padding:15px; border-left:4px solid #e74c3c; line-height: 1.6;"></div>
+    </div>
+
+    <div id="tela-relatorio-medicacoes">
+        <div class="no-print" style="display: flex; gap:10px; margin-bottom: 20px;">
+            <button onclick="fecharRelatorioMedicacoes()" style="background-color: #e8daef; color: #2c3e50; box-shadow: 0 5px #d7bde2; padding: 12px; margin: 0;">🔙 Voltar</button>
+            <button onclick="window.print()" style="background-color: #d6eaf8; color: #2c3e50; box-shadow: 0 5px #aed6f1; padding: 12px; margin: 0;">🖨️ Imprimir Medicações</button>
+        </div>
+        <h2 style="text-align:center; color:#27ae60;">💊 Relatório de Medicações</h2>
+        <p style="text-align:center; color:#7f8c8d; margin-bottom: 20px; font-weight:bold;" id="data-relatorio-medicacoes"></p>
+        <table class="tabela-relatorio">
+            <thead><tr><th>Medicamento</th><th>Dosagem</th><th>Horário</th><th>Enviado Por</th></tr></thead>
+            <tbody id="corpo-tabela-medicacoes"></tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+
+
     <script>
-        // ==========================================
-        // CONFIGURAÇÃO DO FIREBASE (Database + Storage)
-        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyDa7vGvKOKzCAlnIADGUbOtWpr-vZ8iUSY",
             authDomain: "controle-visitas-arlinda.firebaseapp.com",
@@ -341,7 +488,6 @@
         const db = firebase.database();
         const storage = firebase.storage();
 
-        // Variáveis Globais
         let usuarioLogado = '';
         let diaEdicao = '';
         let diasAtivos = []; 
@@ -349,15 +495,35 @@
         let conexaoIniciada = false; 
         let deslocamentoDias = 0; 
         let listaTemporariaModal = []; 
-
-        // Variáveis do Gravador de Áudio
         let mediaRecorder;
         let audioChunks = [];
         let estadoGravacao = { info: false, recadinho: false };
+        let deslocamentoDiasMedicacao = 0;
+        let listenerMedicacaoAtual = null;
 
-        // ==========================================
-        // LOGIN E CONEXÃO
-        // ==========================================
+        function getIdHojeLocal() {
+            let d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+            return d.toISOString().split('T')[0];
+        }
+
+        function atualizarDatasNaTela() {
+            const opcoes = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dataHoje = new Date().toLocaleDateString('pt-BR', opcoes);
+            const dataFormatada = dataHoje.charAt(0).toUpperCase() + dataHoje.slice(1);
+
+            let txtAlimentacao = document.getElementById('data-alimentacao-hoje');
+            if(txtAlimentacao) txtAlimentacao.innerText = dataFormatada;
+            
+            document.querySelectorAll('.data-automatica-geral').forEach(e => e.innerText = dataFormatada);
+        }
+
+function podeApagar(autorItem) {
+            // Remove acentos e joga para minúsculo para garantir que o sistema reconheça sempre
+            const nomeLogado = usuarioLogado.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            // A regra: O autor, ou "junior", ou "jr"
+            return (usuarioLogado === autorItem || nomeLogado === "junior" || nomeLogado === "jr");
+        }
+
         function toggleSenha() {
             const input = document.getElementById('senha-acesso');
             input.type = input.type === 'password' ? 'text' : 'password';
@@ -369,470 +535,693 @@ function fazerLogin() {
             
             if ((senhaDigitada === '409' || senhaDigitada === '409') && nomeDigitado !== '') {
                 usuarioLogado = nomeDigitado;
-                
-                // MENSAGEM NOVA AQUI:
                 document.getElementById('boas-vindas-texto').innerHTML = `Oi, <strong>${usuarioLogado}</strong> - grato por sua visita!!!`;
                 
-                document.getElementById('tela-login').style.display = 'none';
-                document.getElementById('tela-painel').style.display = 'block';
-                iniciarConexaoNuvem(); 
-            } else {
-                document.getElementById('mensagem-erro').style.display = 'block';
+                // Verifica se já viu as boas-vindas nesta sessão do navegador
+                if (!sessionStorage.getItem('boasVindasDindinha')) {
+                    mostrarPopUpBoasVindas();
+                    sessionStorage.setItem('boasVindasDindinha', 'true');
+                } else {
+                    entrarNoPainelDireto();
+                }
+            } else { 
+                document.getElementById('mensagem-erro').style.display = 'block'; 
             }
         }
 
-        function sairDoSistema() {
-            window.location.reload(); 
+        function mostrarPopUpBoasVindas() {
+            // Esconde a tela de login e mostra o Pop-Up com fundo escuro
+            document.getElementById('tela-login').style.display = 'none';
+            document.getElementById('modal-boas-vindas').style.display = 'flex';
+            
+            // Busca rapidinho os visitantes só de HOJE no Firebase
+            let hojeStr = new Date().toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'}).replace(/\//g, '-');
+            
+            db.ref('visitasDonaArlinda/' + hojeStr).once('value').then(snapshot => {
+                let visitasHoje = snapshot.val() || [];
+                let divVisitantes = document.getElementById('lista-visitantes-hoje');
+                
+                if (visitasHoje.length === 0) {
+                    divVisitantes.innerHTML = "<div style='text-align:center; color: #7f8c8d; font-style: italic; margin-top: 5px;'>Que especial! Você é a primeira pessoa a visitar a Dindinha hoje! 🎉</div>";
+                } else {
+                    // Extrai só os nomes únicos para não repetir a mesma pessoa 2x
+                    let nomesUnicos = [...new Set(visitasHoje.map(v => v.nome))];
+                    divVisitantes.innerHTML = nomesUnicos.map(nome => `• <strong>${nome}</strong>`).join('<br>');
+                }
+            }).catch(() => {
+                document.getElementById('lista-visitantes-hoje').innerHTML = "Carregando...";
+            });
         }
+
+        function fecharBoasVindas() {
+            document.getElementById('modal-boas-vindas').style.display = 'none';
+            entrarNoPainelDireto();
+        }
+
+        function entrarNoPainelDireto() {
+            document.getElementById('tela-login').style.display = 'none';
+            document.getElementById('tela-painel').style.display = 'block';
+            iniciarConexaoNuvem(); 
+        }
+
+
+        function sairDoSistema() { window.location.reload(); }
+
+       
+
+
+
+ let deslocamentoDiasGeladeira = 0;
+        let listenerGeladeiraAtual = null;
+        let deslocamentoDiasCompras = 0;
+        let listenerComprasAtual = null;
 
         function iniciarConexaoNuvem() {
-            atualizarPainel();
-            if (!conexaoIniciada) {
-                db.ref('visitasDonaArlinda').on('value', (snapshot) => {
-                    bancoDeDadosNuvem = snapshot.val() || {};
-                    gerarDiasDaSemana(); 
-                });
-                db.ref('obsDonaArlinda').on('value', (snapshot) => {
-                    document.getElementById('texto-observacoes').value = snapshot.val() || '';
-                });
-                db.ref('audiosInfo').on('value', (snapshot) => {
-                    renderizarAudios(snapshot.val(), 'lista-audios-info', false, 'audiosInfo');
-                });
-                db.ref('recadinhosFofos').on('value', (snapshot) => {
-                    renderizarAudios(snapshot.val(), 'lista-audios-recadinhos', true, 'recadinhosFofos');
-                });
-                db.ref('muralFotos').on('value', (snapshot) => {
-                    renderizarFotos(snapshot.val());
-                });
+            atualizarPainel(); atualizarDatasNaTela();
 
-                setInterval(gerarDiasDaSemana, 60000); 
-                conexaoIniciada = true;
+            if (!conexaoIniciada) {
+                db.ref('visitasDonaArlinda').on('value', (snapshot) => { bancoDeDadosNuvem = snapshot.val() || {}; gerarDiasDaSemana(); });
+                db.ref('obsDonaArlinda').on('value', (snapshot) => { document.getElementById('texto-observacoes').value = snapshot.val() || ''; });
+                db.ref('audiosInfo').on('value', (snapshot) => { renderizarAudios(snapshot.val(), 'lista-audios-info', false, 'audiosInfo'); });
+                db.ref('recadinhosFofos').on('value', (snapshot) => { renderizarAudios(snapshot.val(), 'lista-audios-recadinhos', true, 'recadinhosFofos'); });
+                db.ref('muralFotos').on('value', (snapshot) => { renderizarFotos(snapshot.val()); });
+
+                let idHoje = getIdHojeLocal();
+                db.ref('alimentacao/' + idHoje).on('value', snap => renderizarAlimentacao(snap.val()));
+
+                setInterval(gerarDiasDaSemana, 60000); conexaoIniciada = true;
             }
         }
 
-        // ==========================================
-        // AGENDA (Tempo, Fatiamento e Modal)
-        // ==========================================
+        /* ----- AGENDA ----- */
         function mudarSemana(dias) { deslocamentoDias += dias; atualizarPainel(); }
         function irParaHoje() { deslocamentoDias = 0; atualizarPainel(); }
 
         function atualizarPainel() {
             diasAtivos = [];
             const nomesSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-            let hojeReal = new Date();
-            let stringHojeReal = hojeReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+            let hojeReal = new Date(); let stringHojeReal = hojeReal.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
 
             for(let i = 0; i < 7; i++) {
-                let dataObj = new Date();
-                dataObj.setDate(dataObj.getDate() + deslocamentoDias + i); 
+                let dataObj = new Date(); dataObj.setDate(dataObj.getDate() + deslocamentoDias + i); 
                 let dataFormatada = dataObj.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
-                diasAtivos.push({ 
-                    idUnico: dataFormatada.replace(/\//g, '-'), 
-                    tituloPrincipal: (dataFormatada === stringHojeReal) ? 'Hoje' : nomesSemana[dataObj.getDay()], 
-                    subTitulo: dataFormatada, 
-                    objetoData: dataObj 
-                });
+                diasAtivos.push({ idUnico: dataFormatada.replace(/\//g, '-'), tituloPrincipal: (dataFormatada === stringHojeReal) ? 'Hoje' : nomesSemana[dataObj.getDay()], subTitulo: dataFormatada, objetoData: dataObj });
             }
             gerarDiasDaSemana();
         }
 
-        function converterParaMinutos(horaString) {
-            let [h, m] = horaString.split(':').map(Number);
-            return h * 60 + m;
-        }
-
-        function minutosParaHora(minutosTotal) {
-            let h = Math.floor(minutosTotal / 60);
-            let m = minutosTotal % 60;
-            if (h >= 24) h -= 24; 
-            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-        }
-
-        function formatarHora(campo) {
-            let valor = campo.value.replace(/\D/g, ''); 
-            if (valor.length >= 3) { campo.value = valor.substring(0, 2) + ':' + valor.substring(2, 4); } 
-            else { campo.value = valor; }
-        }
+        function converterParaMinutos(horaString) { let [h, m] = horaString.split(':').map(Number); return h * 60 + m; }
+        function minutosParaHora(minutosTotal) { let h = Math.floor(minutosTotal / 60); let m = minutosTotal % 60; if (h >= 24) h -= 24; return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`; }
+        function formatarHora(campo) { let valor = campo.value.replace(/\D/g, ''); if (valor.length >= 3) { campo.value = valor.substring(0, 2) + ':' + valor.substring(2, 4); } else { campo.value = valor; } }
 
         function gerarDiasDaSemana() {
-            const gradeDias = document.getElementById('grade-dias');
-            if(!gradeDias) return; 
-            gradeDias.innerHTML = '';
-
+            const gradeDias = document.getElementById('grade-dias'); if(!gradeDias) return; gradeDias.innerHTML = '';
             diasAtivos.forEach(diaInfo => {
                 let listaVisitas = bancoDeDadosNuvem[diaInfo.idUnico] || [];
                 let htmlVisitas = '<div style="margin-top: 10px;">';
                 
-                if (listaVisitas.length === 0) {
-                    htmlVisitas += `<div class="horario-grupo cor-hora-0"><div style="text-align: center; color: white; padding: 5px; font-weight:bold; display: flex; align-items: center; justify-content: center; gap: 5px;">Nenhuma Visita <span style="font-size: 24px;">😢</span></div></div>`;
+                if (listaVisitas.length === 0) { htmlVisitas += `<div class="horario-grupo cor-hora-0"><div style="text-align: center; color: white; padding: 5px; font-weight:bold; display: flex; align-items: center; justify-content: center; gap: 5px;">Nenhuma Visita <span style="font-size: 24px;">😢</span></div></div>`;
                 } else {
                     let eventos = [];
                     listaVisitas.forEach(v => {
-                        let minI = converterParaMinutos(v.inicio);
-                        let minF = converterParaMinutos(v.fim);
-                        if (minF <= minI) minF += 24 * 60; 
-                        eventos.push({ time: minI, type: 'start', nome: v.nome });
-                        eventos.push({ time: minF, type: 'end', nome: v.nome });
+                        let minI = converterParaMinutos(v.inicio); let minF = converterParaMinutos(v.fim); if (minF <= minI) minF += 24 * 60; 
+                        eventos.push({ time: minI, type: 'start', nome: v.nome }); eventos.push({ time: minF, type: 'end', nome: v.nome });
                     });
                     eventos.sort((a, b) => a.time !== b.time ? a.time - b.time : (a.type === 'end' ? -1 : 1));
-
                     let blocos = [], visitantesAtuais = [], tempoAnterior = null;
                     eventos.forEach(evento => {
-                        if (tempoAnterior !== null && evento.time > tempoAnterior && visitantesAtuais.length > 0) {
-                            blocos.push({ inicio: tempoAnterior, fim: evento.time, nomes: [...visitantesAtuais] });
-                        }
-                        if (evento.type === 'start') visitantesAtuais.push(evento.nome);
-                        else visitantesAtuais.splice(visitantesAtuais.indexOf(evento.nome), 1);
+                        if (tempoAnterior !== null && evento.time > tempoAnterior && visitantesAtuais.length > 0) { blocos.push({ inicio: tempoAnterior, fim: evento.time, nomes: [...visitantesAtuais] }); }
+                        if (evento.type === 'start') visitantesAtuais.push(evento.nome); else visitantesAtuais.splice(visitantesAtuais.indexOf(evento.nome), 1);
                         tempoAnterior = evento.time;
                     });
-
                     blocos.forEach(bloco => {
-                        let qtd = bloco.nomes.length;
-                        let corClasse = qtd === 1 ? 'cor-hora-1' : (qtd === 2 ? 'cor-hora-2' : (qtd <= 4 ? 'cor-hora-3' : 'cor-hora-4'));
+                        let qtd = bloco.nomes.length; let corClasse = qtd === 1 ? 'cor-hora-1' : (qtd === 2 ? 'cor-hora-2' : (qtd <= 4 ? 'cor-hora-3' : 'cor-hora-4'));
                         let carinhas = '<span style="font-size: 24px; vertical-align: middle; margin-left: 5px;">' + '🙂'.repeat(Math.min(qtd, 6)) + '</span>';
-                        
-                        let horaI = minutosParaHora(bloco.inicio);
-                        let horaF = minutosParaHora(bloco.fim);
-                        
-                        let expirou = false;
-                        let [hFim, mFim] = horaF.split(':').map(Number);
-                        let dataHoraFim = new Date(diaInfo.objetoData.getTime());
-                        dataHoraFim.setHours(hFim, mFim, 0, 0);
-                        if (new Date() > dataHoraFim) expirou = true;
-
-                        htmlVisitas += `
-                        <div class="horario-grupo" style="${expirou ? 'opacity: 0.5;' : ''}">
-                            <div class="horario-header ${corClasse}">⏱️ ${horaI} às ${horaF} ${carinhas}</div>
-                            <div class="horario-nomes">
-                                ${bloco.nomes.map(nome => expirou ? `• <s style="color:#7f8c8d;"><strong>${nome}</strong></s>` : `• <strong>${nome}</strong>`).join('<br>')}
-                            </div>
-                        </div>`;
+                        let horaI = minutosParaHora(bloco.inicio); let horaF = minutosParaHora(bloco.fim);
+                        let expirou = false; let [hFim, mFim] = horaF.split(':').map(Number); let dataHoraFim = new Date(diaInfo.objetoData.getTime()); dataHoraFim.setHours(hFim, mFim, 0, 0); if (new Date() > dataHoraFim) expirou = true;
+                        htmlVisitas += `<div class="horario-grupo" style="${expirou ? 'opacity: 0.5;' : ''}"><div class="horario-header ${corClasse}">⏱️ ${horaI} às ${horaF} ${carinhas}</div><div class="horario-nomes">${bloco.nomes.map(nome => expirou ? `• <s style="color:#7f8c8d;"><strong>${nome}</strong></s>` : `• <strong>${nome}</strong>`).join('<br>')}</div></div>`;
                     });
                 }
                 htmlVisitas += '</div>';
-
-                const divColuna = document.createElement('div');
-                divColuna.className = 'dia-coluna';
-                divColuna.innerHTML = `
-                    <div class="dia-titulo"><span style="font-size:14px; font-weight:bold; ${diaInfo.tituloPrincipal === 'Hoje' ? 'color:#3498db;' : ''}">${diaInfo.tituloPrincipal}</span> <span>${diaInfo.subTitulo}</span></div>
-                    <div class="turno-bloco turno-unico" onclick="abrirModal('${diaInfo.idUnico}', '${diaInfo.tituloPrincipal}')">Gestão do Dia ${htmlVisitas}</div>
-                `;
+                const divColuna = document.createElement('div'); divColuna.className = 'dia-coluna';
+                divColuna.innerHTML = `<div class="dia-titulo"><span style="font-size:14px; font-weight:bold; ${diaInfo.tituloPrincipal === 'Hoje' ? 'color:#3498db;' : ''}">${diaInfo.tituloPrincipal}</span> <span>${diaInfo.subTitulo}</span></div><div class="turno-bloco turno-unico" onclick="abrirModal('${diaInfo.idUnico}', '${diaInfo.tituloPrincipal}')">Gestão do Dia ${htmlVisitas}</div>`;
                 gradeDias.appendChild(divColuna);
             });
         }
 
         function abrirModal(idData, nomeExibicao) {
-            diaEdicao = idData;
-            document.getElementById('modal-titulo').innerText = `${nomeExibicao} (${idData.replace('-', '/')})`;
+            diaEdicao = idData; document.getElementById('modal-titulo').innerText = `${nomeExibicao} (${idData.replace('-', '/')})`;
             listaTemporariaModal = [...(bancoDeDadosNuvem[idData] || [])];
             document.getElementById('novo-nome').value = ''; document.getElementById('novo-inicio').value = ''; document.getElementById('novo-fim').value = '';
-            atualizarListaNoModal();
-            document.getElementById('modal-overlay').style.display = 'flex';
+            atualizarListaNoModal(); document.getElementById('modal-overlay').style.display = 'flex';
         }
-
         function fecharModal() { document.getElementById('modal-overlay').style.display = 'none'; }
 
         function atualizarListaNoModal() {
-            const divLista = document.getElementById('lista-visitas-modal');
-            divLista.innerHTML = '';
-            if (listaTemporariaModal.length === 0) {
-                divLista.innerHTML = '<div style="text-align:center; color:#7f8c8d; padding:10px;">Nenhum horário agendado.</div>';
-                return;
-            }
+            const divLista = document.getElementById('lista-visitas-modal'); divLista.innerHTML = '';
+            if (listaTemporariaModal.length === 0) { divLista.innerHTML = '<div style="text-align:center; color:#7f8c8d; padding:10px;">Nenhum horário agendado.</div>'; return; }
             listaTemporariaModal.sort((a, b) => converterParaMinutos(a.inicio) - converterParaMinutos(b.inicio));
             listaTemporariaModal.forEach((visita, index) => {
                 divLista.innerHTML += `
                 <div class="item-visita-modal">
                     <div><strong>${visita.inicio} às ${visita.fim}</strong><br><strong>${visita.nome}</strong></div>
-                    <button class="btn-apagar-modal" onclick="listaTemporariaModal.splice(${index}, 1); atualizarListaNoModal();">🗑️ Excluir</button>
+                    <div style="display:flex; gap:5px;">
+                        <button class="btn-acao-lista btn-editar-pastel" onclick="editarVisitaModal(${index})">✏️ Editar</button>
+                        <button class="btn-acao-lista btn-apagar-pastel" onclick="listaTemporariaModal.splice(${index}, 1); atualizarListaNoModal();">🗑️ Excluir</button>
+                    </div>
                 </div>`;
             });
         }
 
-        function adicionarNaListaModal() {
-            const nome = document.getElementById('novo-nome').value.trim();
-            const inicio = document.getElementById('novo-inicio').value;
+        function editarVisitaModal(index) {
+            let visita = listaTemporariaModal[index]; document.getElementById('novo-nome').value = visita.nome; document.getElementById('novo-inicio').value = visita.inicio; document.getElementById('novo-fim').value = visita.fim;
+            listaTemporariaModal.splice(index, 1); atualizarListaNoModal();
+        }
+
+function adicionarNaListaModal() {
+            const nome = document.getElementById('novo-nome').value.trim(); 
+            const inicio = document.getElementById('novo-inicio').value; 
             const fim = document.getElementById('novo-fim').value;
-
-            if (nome === '' || inicio.length !== 5 || fim.length !== 5) { alert("Preencha o nome e o horário completo (Ex: 14:05)!"); return; }
-            let [hIni, mIni] = inicio.split(':').map(Number); let [hFim, mFim] = fim.split(':').map(Number);
-            if (isNaN(hIni) || isNaN(mIni) || isNaN(hFim) || isNaN(mFim) || hIni > 23 || mIni > 59 || hFim > 23 || mFim > 59) { alert("Horário inválido!"); return; }
-            if (mIni % 5 !== 0 || mFim % 5 !== 0) { alert("Apenas intervalos exatos de 5 minutos!"); return; }
-
-            listaTemporariaModal.push({ nome: nome, inicio: inicio, fim: fim });
-            document.getElementById('novo-nome').value = ''; document.getElementById('novo-inicio').value = ''; document.getElementById('novo-fim').value = '';
-            atualizarListaNoModal();
-        }
-
-        function salvarVisitasNuvem() {
-            bancoDeDadosNuvem[diaEdicao] = listaTemporariaModal;
-            db.ref('visitasDonaArlinda').set(bancoDeDadosNuvem).then(() => fecharModal()).catch(e => alert("Erro: " + e.message));
-        }
-
-        // ==========================================
-        // TEXTO E WHATSAPP
-        // ==========================================
-function inserirDataObs() {
-            const t = document.getElementById('texto-observacoes');
-            const dataFormatada = `🗓️ ${new Date().toLocaleDateString('pt-BR')}\n`;
             
-            // Se a caixa estiver vazia, apenas coloca a data
-            if (t.value.trim() === '') {
-                t.value = dataFormatada;
-            } else {
-                // Se já tiver texto, coloca a data no topo, dá um espaço, e mantém o texto antigo embaixo
-                t.value = dataFormatada + '\n' + t.value;
+            if (nome === '' || inicio.length !== 5 || fim.length !== 5) { 
+                alert("Preencha o nome e o horário completo (Ex: 14:05)!"); 
+                return; 
             }
             
-            t.focus();
-            // Coloca o cursor do teclado piscando logo depois da data inserida
-            t.setSelectionRange(dataFormatada.length, dataFormatada.length); 
+            let [hIni, mIni] = inicio.split(':').map(Number); 
+            let [hFim, mFim] = fim.split(':').map(Number);
+            
+            if (isNaN(hIni) || isNaN(mIni) || isNaN(hFim) || isNaN(mFim) || hIni > 23 || mIni > 59 || hFim > 23 || mFim > 59) { 
+                alert("Horário inválido!"); 
+                return; 
+            }
+            
+            let minI = hIni * 60 + mIni;
+            let minF = hFim * 60 + mFim;
+
+            if (minF <= minI) {
+                // Virou a madrugada!
+                alert("🌙 Horário estendido detectado! O sistema dividirá automaticamente: até as 23:59 em hoje, e a partir das 00:00 para amanhã!");
+                
+                // Parte 1: Hoje
+                listaTemporariaModal.push({ nome: nome, inicio: inicio, fim: '23:59' });
+                
+                // Parte 2: Amanhã
+                let partesData = diaEdicao.split('-'); 
+                let dataAmanha = new Date(new Date().getFullYear(), partesData[1] - 1, partesData[0], 12, 0, 0);
+                dataAmanha.setDate(dataAmanha.getDate() + 1);
+                let idAmanha = dataAmanha.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'}).replace(/\//g, '-');
+                
+                if (!bancoDeDadosNuvem[idAmanha]) bancoDeDadosNuvem[idAmanha] = [];
+                bancoDeDadosNuvem[idAmanha].push({ nome: nome, inicio: '00:00', fim: fim });
+                
+                // Já salva a parte de amanhã direto no Firebase para não perder
+                db.ref('visitasDonaArlinda').set(bancoDeDadosNuvem);
+                
+            } else {
+                // Horário normal, no mesmo dia
+                listaTemporariaModal.push({ nome: nome, inicio: inicio, fim: fim });
+            }
+            
+            document.getElementById('novo-nome').value = ''; 
+            document.getElementById('novo-inicio').value = ''; 
+            document.getElementById('novo-fim').value = ''; 
+            atualizarListaNoModal();
+        }
+        function salvarVisitasNuvem() { bancoDeDadosNuvem[diaEdicao] = listaTemporariaModal; db.ref('visitasDonaArlinda').set(bancoDeDadosNuvem).then(() => fecharModal()).catch(e => alert("Erro: " + e.message)); }
+
+      /* ----- OBSERVAÇÕES / WPP ----- */
+        function inserirDataObs() {
+            const t = document.getElementById('texto-observacoes'); 
+            t.disabled = false;
+            t.placeholder = "Digite as informações médicas, dieta, estado geral...";
+            
+            const dataFormatada = `🗓️ ${new Date().toLocaleDateString('pt-BR')}\n`;
+            if (!t.value.includes(dataFormatada.trim())) {
+                if (t.value.trim() === '') { t.value = dataFormatada; } else { t.value = dataFormatada + '\n' + t.value; }
+            }
+            
+            document.getElementById('btn-inserir-data-obs').style.display = 'none';
+            document.getElementById('btn-editar-obs').style.display = 'block';
+            
+            t.focus(); 
+            t.setSelectionRange(t.value.length, t.value.length); 
         }
 
-        function salvarObservacao() {
-            db.ref('obsDonaArlinda').set(document.getElementById('texto-observacoes').value)
-              .then(() => alert('✅ Informações salvas com sucesso!'))
-              .catch(e => alert('Erro: ' + e.message));
+        function editarCaixaObs() {
+            const t = document.getElementById('texto-observacoes');
+            t.disabled = false;
+            t.focus();
+            t.setSelectionRange(t.value.length, t.value.length);
+        }
+
+        function travarCaixaObs() {
+            const t = document.getElementById('texto-observacoes');
+            t.disabled = true;
+        }
+
+        function salvarObservacao() { 
+            const t = document.getElementById('texto-observacoes');
+            let texto = t.value;
+            
+            if (!texto.includes('🗓️')) {
+                alert("⚠️ Ação bloqueada! Você deve clicar em '🗓️ Inserir Data' antes de escrever.");
+                return;
+            }
+            
+            let textoSemData = texto.replace(`🗓️ ${new Date().toLocaleDateString('pt-BR')}`, '').trim();
+            if (textoSemData === '') {
+                alert("⚠️ Digite alguma informação junto com a data antes de salvar!");
+                return;
+            }
+
+            db.ref('informacoesRelevantes').push({
+                texto: texto, autor: usuarioLogado
+            }).then(() => { 
+                t.value = '';
+                t.disabled = true;
+                t.placeholder = "🔒 Travado! Clique no botão '🗓️ Inserir Data' acima para liberar e digitar...";
+                
+                document.getElementById('btn-inserir-data-obs').style.display = 'block';
+                document.getElementById('btn-editar-obs').style.display = 'none';
+                
+                alert('✅ Informação salva com sucesso!'); 
+            }).catch(e => alert('Erro: ' + e.message)); 
+        }
+
+        function renderizarObservacoes(dados) {
+            const div = document.getElementById('lista-observacoes');
+            if (!div) return;
+            div.innerHTML = '';
+            if (dados) {
+                Object.keys(dados).forEach(key => {
+                    let item = dados[key];
+                    let t = item.texto.replace(/\n/g, '<br>');
+                    div.innerHTML += `
+                    <div style="background: #f9f9f9; border-left: 4px solid #3498db; padding: 10px; margin-bottom: 10px; border-radius: 4px;">
+                        <div class="texto-justificado" style="font-size: 14px; color: #2c3e50; margin-bottom: 8px;">${t}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #ccc; padding-top: 5px;">
+                            <span style="font-size: 11px; color: #7f8c8d;">Por: ${item.autor}</span>
+                            <div style="display: flex; gap: 5px;">
+                                <button onclick="editarItemLivre('informacoesRelevantes', '${key}', '${item.autor}')" class="btn-acao-lista btn-editar-pastel" style="padding: 3px 6px; font-size: 12px; width: auto;">✏️ Editar</button>
+                                <button onclick="deletarItemLivre('informacoesRelevantes', '${key}', '${item.autor}')" class="btn-acao-lista btn-apagar-pastel" style="padding: 3px 6px; font-size: 12px; width: auto;">🗑️ Apagar</button>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+            }
+        }
+
+        function editarItemLivre(caminhoDB, idItem, autorItem) {
+            if (!podeApagar(autorItem)) { 
+                alert("❌ Ação bloqueada! Apenas o Júnior ou quem enviou podem editar."); 
+                return; 
+            }
+            db.ref(caminhoDB).child(idItem).once('value').then(snap => {
+                let info = snap.val();
+                if(info) {
+                    let novoTexto = prompt("Edite a informação:", info.texto);
+                    if (novoTexto !== null && novoTexto.trim() !== "") {
+                        db.ref(caminhoDB).child(idItem).update({ texto: novoTexto });
+                    }
+                }
+            });
         }
 
         function enviarWhatsApp() {
-            let hoje = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-            let ama = new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-            
+            let hoje = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}); let ama = new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
             let hVis = bancoDeDadosNuvem[hoje.replace(/\//g, '-')] || []; hVis.sort((a,b) => converterParaMinutos(a.inicio) - converterParaMinutos(b.inicio));
             let aVis = bancoDeDadosNuvem[ama.replace(/\//g, '-')] || []; aVis.sort((a,b) => converterParaMinutos(a.inicio) - converterParaMinutos(b.inicio));
-            
-            let txt = `*Agenda Dona Arlinda*\n\n📅 *HOJE (${hoje})*\n`;
-            txt += hVis.length ? hVis.map(v => `- ${v.inicio} às ${v.fim}: *${v.nome}*`).join('\n') : 'Livre';
-            txt += `\n\n📅 *AMANHÃ (${ama})*\n`;
-            txt += aVis.length ? aVis.map(v => `- ${v.inicio} às ${v.fim}: *${v.nome}*`).join('\n') : 'Livre';
-
+            let txt = `*Agenda Dona Arlinda*\n\n📅 *HOJE (${hoje})*\n`; txt += hVis.length ? hVis.map(v => `- ${v.inicio} às ${v.fim}: *${v.nome}*`).join('\n') : 'Livre';
+            txt += `\n\n📅 *AMANHÃ (${ama})*\n`; txt += aVis.length ? aVis.map(v => `- ${v.inicio} às ${v.fim}: *${v.nome}*`).join('\n') : 'Livre';
             window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`, '_blank');
         }
 
-        // ==========================================
-        // EXCLUSÃO DE MÍDIA (FOTOS E ÁUDIOS)
-        // ==========================================
         async function deletarMidia(caminhoDB, idNode, urlArquivo, autorItem) {
-            const senhaMestreReal = "409"; 
-            
-            // Padroniza o nome para ignorar acentos e maiúsculas (júnior = junior = JUNIOR)
-            const nomeLogado = usuarioLogado.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            const isJunior = nomeLogado === "junior";
+            if (!podeApagar(autorItem)) { alert("❌ Ação bloqueada! Apenas o Júnior ou quem enviou podem apagar."); return; }
+            if (!confirm("Tem certeza que deseja apagar este arquivo permanentemente?")) return;
+            try { await firebase.storage().refFromURL(urlArquivo).delete(); } catch (error) {}
+            try { await db.ref(caminhoDB).child(idNode).remove(); } catch (error) { alert("Erro ao remover: " + error.message); }
+        }
+        
+        function deletarItemLivre(caminhoDB, idItem, autorItem) {
+            if (podeApagar(autorItem)) { if (confirm("Deseja apagar este item?")) { db.ref(caminhoDB).child(idItem).remove(); } } 
+            else { alert(`Ação negada! Apenas o autor original ou o Júnior podem apagar/editar.`); }
+        }
 
-            // Verifica as permissões
-            if (usuarioLogado !== autorItem) {
-                if (isJunior) {
-                    const senha = prompt(`Júnior, digite a Senha Mestre para apagar o arquivo de ${autorItem}:`);
-                    if (senha !== senhaMestreReal) {
-                        if (senha !== null) alert("❌ Senha Mestre Incorreta!");
-                        return; // Para a execução se a senha for errada
-                    }
-                } else {
-                    alert("❌ Ação bloqueada! Você só pode apagar os seus próprios arquivos.");
-                    return; // Para a execução
+        /* ----- ALIMENTAÇÃO ----- */
+        function abrirAlimentacao() { 
+            document.getElementById('tela-painel').style.display = 'none'; 
+            document.getElementById('aba-alimentacao').style.display = 'block'; 
+            atualizarDatasNaTela();
+            deslocamentoDiasGeladeira = 0;
+            carregarDiaGeladeira();
+            deslocamentoDiasCompras = 0;
+            carregarDiaCompras();
+            window.scrollTo(0,0); 
+        }
+        function fecharAlimentacao() { 
+            document.getElementById('aba-alimentacao').style.display = 'none'; 
+            document.getElementById('tela-painel').style.display = 'block'; 
+            if (listenerGeladeiraAtual) db.ref(listenerGeladeiraAtual).off();
+            if (listenerComprasAtual) db.ref(listenerComprasAtual).off();
+            window.scrollTo(0,0); 
+        }
+
+        function renderizarAlimentacao(dados) {
+            const refeicoes = ['cafe', 'almoco', 'tarde', 'janta'];
+            refeicoes.forEach(coluna => {
+                const div = document.getElementById('lista-' + coluna); if(!div) return; div.innerHTML = '';
+                if(dados && dados[coluna]) {
+                    Object.keys(dados[coluna]).forEach(key => {
+                        let item = dados[coluna][key]; let textoSeguro = item.texto.replace(/'/g, "\\'"); 
+                        div.innerHTML += `
+                        <div style="background: white; border: 1px solid #ecf0f1; border-radius: 6px; padding: 10px; margin-bottom: 5px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                            <div style="flex: 1; margin-right: 10px; text-align: left;">
+                                <strong style="color: #34495e;">${item.texto}</strong><br>
+                                <span style="font-size: 10px; color: #7f8c8d;">por ${item.autor}</span>
+                            </div>
+                            <div style="display: flex; gap: 5px;">
+                                <button onclick="repetirAlimentacaoItem('${coluna}', '${textoSeguro}')" class="btn-acao-lista btn-repetir-pastel" title="Repetir para amanhã">🔄</button>
+                                <button onclick="deletarItemLivre('alimentacao/${getIdHojeLocal()}/${coluna}', '${key}', '${item.autor}')" class="btn-acao-lista btn-apagar-pastel" title="Apagar">🗑️</button>
+                            </div>
+                        </div>`;
+                    });
                 }
-            } else {
-                // Se for o próprio autor logado, apenas pede confirmação
-                if (!confirm("Tem certeza que deseja apagar este arquivo permanentemente?")) return;
-            }
+            });
+        }
 
-            // 1. Exclui do Firebase Storage
-            try {
-                const refArquivo = firebase.storage().refFromURL(urlArquivo);
-                await refArquivo.delete();
-            } catch (error) {
-                console.warn("Aviso: Arquivo não encontrado no Storage ou já deletado.", error);
-            }
+        function adicionarRefeicaoDireto(coluna, inputId) {
+            let input = document.getElementById(inputId); let texto = input.value.trim();
+            if(texto !== "") { db.ref(`alimentacao/${getIdHojeLocal()}/${coluna}`).push({ texto: texto, autor: usuarioLogado }); input.value = ''; }
+        }
 
-            // 2. Exclui do Firebase Realtime Database
-            try {
-                await db.ref(caminhoDB).child(idNode).remove();
-            } catch (error) {
-                alert("Erro ao remover do banco de dados: " + error.message);
+        function repetirAlimentacaoItem(coluna, texto) {
+            if (confirm(`Deseja repetir o item "${texto}" para a alimentação de AMANHÃ?`)) {
+                let amanha = new Date(); amanha.setDate(amanha.getDate() + 1); amanha.setMinutes(amanha.getMinutes() - amanha.getTimezoneOffset());
+                let idAmanha = amanha.toISOString().split('T')[0];
+                db.ref(`alimentacao/${idAmanha}/${coluna}`).push({ texto: texto, autor: usuarioLogado }).then(() => alert('✅ Agendado para amanhã!'));
             }
         }
 
-        // ==========================================
-        // ÁUDIO - GRAVAÇÃO E UPLOAD
-        // ==========================================
+        function mudarDiaGeladeira(dias) { deslocamentoDiasGeladeira += dias; carregarDiaGeladeira(); }
+        function mudarDiaCompras(dias) { deslocamentoDiasCompras += dias; carregarDiaCompras(); }
+
+        function carregarDiaGeladeira() {
+            let dataAlvo = new Date(); dataAlvo.setDate(dataAlvo.getDate() + deslocamentoDiasGeladeira); dataAlvo.setMinutes(dataAlvo.getMinutes() - dataAlvo.getTimezoneOffset());
+            let idDia = dataAlvo.toISOString().split('T')[0];
+            let textoData = (deslocamentoDiasGeladeira === 0) ? "Hoje" : ((deslocamentoDiasGeladeira === 1) ? "Amanhã" : ((deslocamentoDiasGeladeira === -1) ? "Ontem" : dataAlvo.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})));
+            document.getElementById('data-geladeira-tela').innerText = textoData;
+
+            if (listenerGeladeiraAtual) db.ref(listenerGeladeiraAtual).off();
+            listenerGeladeiraAtual = 'geladeira/' + idDia;
+            db.ref(listenerGeladeiraAtual).on('value', snap => renderizarListaComum(snap.val(), 'lista-geladeira', 'geladeira', idDia));
+        }
+
+        function carregarDiaCompras() {
+            let dataAlvo = new Date(); dataAlvo.setDate(dataAlvo.getDate() + deslocamentoDiasCompras); dataAlvo.setMinutes(dataAlvo.getMinutes() - dataAlvo.getTimezoneOffset());
+            let idDia = dataAlvo.toISOString().split('T')[0];
+            let textoData = (deslocamentoDiasCompras === 0) ? "Hoje" : ((deslocamentoDiasCompras === 1) ? "Amanhã" : ((deslocamentoDiasCompras === -1) ? "Ontem" : dataAlvo.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})));
+            document.getElementById('data-compras-tela').innerText = textoData;
+
+            if (listenerComprasAtual) db.ref(listenerComprasAtual).off();
+            listenerComprasAtual = 'compras/' + idDia;
+            db.ref(listenerComprasAtual).on('value', snap => renderizarListaComum(snap.val(), 'lista-compras', 'compras', idDia));
+        }
+
+        function renderizarListaComum(dados, divId, caminhoRef, idDiaSelecionado) {
+            const div = document.getElementById(divId); if(!div) return; div.innerHTML = '';
+            if(dados) {
+                Object.keys(dados).forEach(key => {
+                    let item = dados[key];
+                    div.innerHTML += `
+                    <div style="font-size: 13px; display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 6px 0; align-items: center;">
+                        <span><strong style="color: #34495e;">${item.texto}</strong> <em style="font-size:10px;color:#7f8c8d">(${item.autor})</em></span>
+                        <button onclick="deletarItemLivre('${caminhoRef}/${idDiaSelecionado}', '${key}', '${item.autor}')" class="btn-acao-lista btn-apagar-pastel" style="padding: 3px 6px;">🗑️</button>
+                    </div>`;
+                });
+            } else {
+                 div.innerHTML = `<div style="text-align:center; padding: 10px; color: #7f8c8d; font-style: italic; font-size: 12px;">Lista vazia neste dia.</div>`;
+            }
+        }
+
+        function adicionarItem(caminhoRef, inputId) {
+            const input = document.getElementById(inputId);
+            let idDiaUsado = (caminhoRef === 'geladeira') ? (new Date(new Date().setDate(new Date().getDate() + deslocamentoDiasGeladeira)).toISOString().split('T')[0]) : (new Date(new Date().setDate(new Date().getDate() + deslocamentoDiasCompras)).toISOString().split('T')[0]);
+            
+            if(input.value.trim() !== '') { 
+                db.ref(`${caminhoRef}/${idDiaUsado}`).push({ texto: input.value.trim(), autor: usuarioLogado }); 
+                input.value = ''; 
+            }
+        }
+
+        function repetirGeladeiraOntem() {
+            let ontem = new Date(); ontem.setDate(ontem.getDate() - 1); ontem.setMinutes(ontem.getMinutes() - ontem.getTimezoneOffset());
+            let idOntem = ontem.toISOString().split('T')[0]; let idHoje = getIdHojeLocal();
+            db.ref('geladeira/' + idOntem).once('value', snap => {
+                if (snap.exists()) { let itens = snap.val(); for (let key in itens) { db.ref('geladeira/' + idHoje).push({ texto: itens[key].texto, autor: usuarioLogado }); } alert("Copiados de ontem!");
+                } else { alert("Não havia itens na geladeira ontem."); }
+            });
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        /* ----- MEDICAÇÕES ----- */
+        function abrirMedicacoes() { document.getElementById('tela-painel').style.display = 'none'; document.getElementById('aba-medicacoes').style.display = 'block'; deslocamentoDiasMedicacao = 0; carregarDiaMedicacao(); window.scrollTo(0,0); }
+        function fecharMedicacoes() { document.getElementById('aba-medicacoes').style.display = 'none'; document.getElementById('tela-painel').style.display = 'block'; if (listenerMedicacaoAtual) db.ref(listenerMedicacaoAtual).off(); window.scrollTo(0,0); }
+        function mudarDiaMedicacao(dias) { deslocamentoDiasMedicacao += dias; carregarDiaMedicacao(); }
+
+        function carregarDiaMedicacao() {
+            let dataAlvo = new Date(); dataAlvo.setDate(dataAlvo.getDate() + deslocamentoDiasMedicacao); dataAlvo.setMinutes(dataAlvo.getMinutes() - dataAlvo.getTimezoneOffset());
+            let idDia = dataAlvo.toISOString().split('T')[0]; 
+            const opcoes = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; let textoData = dataAlvo.toLocaleDateString('pt-BR', opcoes); textoData = textoData.charAt(0).toUpperCase() + textoData.slice(1);
+            
+            if (deslocamentoDiasMedicacao === 0) { document.getElementById('data-medicacoes-tela').innerHTML = "Hoje<br><span style='font-size:12px; font-weight:normal;'>" + textoData + "</span>"; } 
+            else if (deslocamentoDiasMedicacao === 1) { document.getElementById('data-medicacoes-tela').innerHTML = "Amanhã<br><span style='font-size:12px; font-weight:normal;'>" + textoData + "</span>"; } 
+            else if (deslocamentoDiasMedicacao === -1) { document.getElementById('data-medicacoes-tela').innerHTML = "Ontem<br><span style='font-size:12px; font-weight:normal;'>" + textoData + "</span>"; } 
+            else { document.getElementById('data-medicacoes-tela').innerHTML = "<span style='font-size:14px;'>" + textoData + "</span>"; }
+
+            if (listenerMedicacaoAtual) db.ref(listenerMedicacaoAtual).off();
+            listenerMedicacaoAtual = 'medicacoes/' + idDia;
+            db.ref(listenerMedicacaoAtual).on('value', snap => renderizarMedicacoes(snap.val(), idDia));
+        }
+
+        function renderizarMedicacoes(dados, idDia) {
+            const div = document.getElementById('lista-medicacoes-dinamica'); div.innerHTML = '';
+            if(dados) {
+                Object.keys(dados).forEach(key => {
+                    let m = dados[key]; let nomeS = m.nome.replace(/'/g, "\\'"); let dosS = m.dosagem.replace(/'/g, "\\'"); let horS = m.horario.replace(/'/g, "\\'");
+                    div.innerHTML += `
+                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 5px; background: white; padding: 10px; border-radius: 6px; margin-bottom: 8px; font-size: 13px; align-items: center; text-align: center; border: 1px solid #bdc3c7; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                        <div style="text-align: left; padding-left: 5px;"><strong style="color: #2c3e50; font-size: 14px;">${m.nome}</strong><br><span style="font-size:10px; color:#7f8c8d">por ${m.autor}</span></div>
+                        <div style="color: #e67e22; font-weight: bold;">${m.dosagem}</div>
+                        <div style="color: #2980b9; font-weight: bold;">${m.horario}</div>
+                        <div style="display:flex; justify-content:center; gap:5px; flex-wrap: wrap;">
+                            <button onclick="editarMedicacao('${idDia}', '${key}', '${nomeS}', '${dosS}', '${horS}', '${m.autor}')" class="btn-acao-lista btn-editar-pastel" title="Editar">✏️</button>
+                            <button onclick="repetirMedicacao('${nomeS}', '${dosS}', '${horS}')" class="btn-acao-lista btn-repetir-pastel" title="Repetir">🔄</button>
+                            <button onclick="deletarMedicacao('${idDia}', '${key}', '${m.autor}')" class="btn-acao-lista btn-apagar-pastel" title="Apagar">🗑️</button>
+                        </div>
+                    </div>`;
+                });
+            } else { div.innerHTML = '<div style="text-align:center; padding: 20px; color: #7f8c8d; font-style: italic; background: white; border-radius: 8px; border: 1px dashed #bdc3c7;">Nenhuma medicação registrada para este dia.</div>'; }
+        }
+
+        function adicionarMedicacaoDireto() {
+            let iNome = document.getElementById('add-med-nome'); let iDos = document.getElementById('add-med-dosagem'); let iHor = document.getElementById('add-med-horario');
+            let nome = iNome.value.trim(); if(!nome) { alert("Por favor, digite o nome da medicação!"); return; }
+            db.ref(listenerMedicacaoAtual).push({ nome: nome, dosagem: iDos.value.trim() || '-', horario: iHor.value.trim() || '-', autor: usuarioLogado });
+            iNome.value = ''; iDos.value = ''; iHor.value = '';
+        }
+
+        function editarMedicacao(idDia, idItem, nomeAtual, dosagemAtual, horarioAtual, autorItem) {
+            if (!podeApagar(autorItem)) { alert("❌ Apenas o Júnior ou quem enviou podem editar!"); return; }
+            let novoNome = prompt("Editar Nome do Medicamento:", nomeAtual); if(novoNome === null) return;
+            let novaDosagem = prompt("Editar Dosagem:", dosagemAtual); let novoHorario = prompt("Editar Horário:", horarioAtual);
+            db.ref('medicacoes/' + idDia).child(idItem).update({ nome: novoNome.trim(), dosagem: novaDosagem ? novaDosagem.trim() : '-', horario: novoHorario ? novoHorario.trim() : '-' });
+        }
+
+        function deletarMedicacao(idDia, idItem, autorItem) {
+            if (!podeApagar(autorItem)) { alert("❌ Apenas o Júnior ou quem enviou podem apagar!"); return; }
+            if (confirm("Tem certeza que deseja apagar esta medicação?")) { db.ref('medicacoes/' + idDia).child(idItem).remove(); }
+        }
+
+        function repetirMedicacao(nome, dosagem, horario) {
+            let opcao = prompt("Para quando deseja repetir este medicamento?\n1 - Amanhã (Dia seguinte)\n2 - Daqui 1 Semana (7 dias)\n3 - Daqui 1 Mês (30 dias)");
+            let dias = 0; if(opcao === '1') dias = 1; else if(opcao === '2') dias = 7; else if(opcao === '3') dias = 30; else return;
+            let dataFutura = new Date(); dataFutura.setDate(dataFutura.getDate() + deslocamentoDiasMedicacao + dias); dataFutura.setMinutes(dataFutura.getMinutes() - dataFutura.getTimezoneOffset());
+            let idFuturo = dataFutura.toISOString().split('T')[0];
+            db.ref('medicacoes/' + idFuturo).push({ nome: nome, dosagem: dosagem, horario: horario, autor: usuarioLogado }).then(() => alert(`✅ Medicamento agendado com sucesso para o dia ${dataFutura.toLocaleDateString('pt-BR')}!`));
+        }
+
+        /* ----- ÁUDIO E FOTOS ----- */
         async function alternarGravacao(tipo) {
             const btnId = tipo === 'info' ? 'btn-gravar-info' : 'btn-gravar-recado';
-            const btn = document.getElementById(btnId);
-            const dbPath = tipo === 'info' ? 'audiosInfo' : 'recadinhosFofos';
-
+            const btn = document.getElementById(btnId); const dbPath = tipo === 'info' ? 'audiosInfo' : 'recadinhosFofos';
             if (!estadoGravacao[tipo]) {
                 try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    audioChunks = [];
-                    
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); mediaRecorder = new MediaRecorder(stream); audioChunks = [];
                     mediaRecorder.ondataavailable = e => { if(e.data.size > 0) audioChunks.push(e.data); };
-                    
                     mediaRecorder.onstop = () => {
-                        btn.classList.remove('gravando');
-                        btn.disabled = true;
-
+                        btn.classList.remove('gravando'); btn.disabled = true;
                         const audioBlob = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
-                        const nomeArquivo = `${Date.now()}_${usuarioLogado.replace(/[^a-zA-Z0-9]/g, '')}.webm`;
-                        const pasta = tipo === 'info' ? 'audios_info' : 'audios_recados';
-                        
+                        const nomeArquivo = `${Date.now()}_${usuarioLogado.replace(/[^a-zA-Z0-9]/g, '')}.webm`; const pasta = tipo === 'info' ? 'audios_info' : 'audios_recados';
                         const uploadTask = storage.ref(`${pasta}/${nomeArquivo}`).put(audioBlob);
-
                         uploadTask.on('state_changed',
-                            (snapshot) => {
-                                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                btn.innerHTML = `⏳ Enviando... ${Math.round(progress)}%`;
-                            },
-                            (error) => {
-                                alert("Erro no Firebase Storage: " + error.message);
-                                btn.innerHTML = tipo === 'info' ? '🎤 Gravar Informações Relevantes' : '💖 Gravar Novo Recadinho';
-                                btn.disabled = false;
-                            },
-                            () => {
-                                uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                                    db.ref(dbPath).push({
-                                        nome: usuarioLogado,
-                                        url: downloadURL,
-                                        data: new Date().toLocaleString('pt-BR')
-                                    }).then(() => {
-                                        btn.innerHTML = tipo === 'info' ? '🎤 Gravar Áudio Médico' : '💖 Gravar Novo Recadinho';
-                                        btn.disabled = false;
-                                    });
-                                });
-                            }
+                            (snapshot) => { let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100; btn.innerHTML = `⏳ Enviando... ${Math.round(progress)}%`; },
+                            (error) => { alert("Erro no Firebase: " + error.message); btn.innerHTML = tipo === 'info' ? '🎤 Gravar Informações Relevantes' : '🎤💖 Gravar Novo Recadinho'; btn.disabled = false; },
+                            () => { uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => { db.ref(dbPath).push({ nome: usuarioLogado, url: downloadURL, data: new Date().toLocaleString('pt-BR') }).then(() => { btn.innerHTML = tipo === 'info' ? '🎤 Gravar Informações Relevantes' : '🎤💖 Gravar Novo Recadinho'; btn.disabled = false; }); }); }
                         );
                     };
-
-                    mediaRecorder.start();
-                    estadoGravacao[tipo] = true;
-                    btn.innerHTML = '🔴 GRAVANDO... (Toque para Parar)';
-                    btn.classList.add('gravando');
-
-                } catch (err) { alert("Erro ao acessar microfone. Verifique as permissões do navegador."); }
-            } else {
-                mediaRecorder.stop();
-                estadoGravacao[tipo] = false;
-            }
+                    mediaRecorder.start(); estadoGravacao[tipo] = true; btn.innerHTML = '🔴 GRAVANDO... (Toque para Parar)'; btn.classList.add('gravando');
+                } catch (err) { alert("Erro ao acessar microfone."); }
+            } else { mediaRecorder.stop(); estadoGravacao[tipo] = false; }
         }
 
         function renderizarAudios(dados, containerId, fofo = false, dbPath) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            if (!dados) return;
-
+            const container = document.getElementById(containerId); container.innerHTML = ''; if (!dados) return;
             let audios = Object.keys(dados).map(k => ({ id: k, ...dados[k] }));
-            
-            audios.sort((a, b) => {
-                let da = a.data.split(' ')[0].split('/').reverse().join('') + a.data.split(' ')[1];
-                let db = b.data.split(' ')[0].split('/').reverse().join('') + b.data.split(' ')[1];
-                return db.localeCompare(da);
-            });
-
+            audios.sort((a, b) => { let da = a.data.split(' ')[0].split('/').reverse().join('') + a.data.split(' ')[1]; let db = b.data.split(' ')[0].split('/').reverse().join('') + b.data.split(' ')[1]; return db.localeCompare(da); });
             audios.forEach(aud => {
                 let icone = fofo ? '💌' : '🩺';
                 container.innerHTML += `
                 <div class="item-audio">
                     <div class="item-audio-header" style="align-items: center;">
-                        <div style="flex-grow: 1;">
-                            <span class="nome">${icone} ${fofo ? 'De:' : 'Por:'} <strong>${aud.nome}</strong></span>
-                            <span style="display:block; font-size:11px; font-weight:normal; margin-top:2px;">${aud.data}</span>
-                        </div>
-                        <button onclick="deletarMidia('${dbPath}', '${aud.id}', '${aud.url}', '${aud.nome}')" style="background:none; border:none; font-size:18px; cursor:pointer; color:#e74c3c; box-shadow:none; width:auto; padding:5px;" title="Apagar Áudio">🗑️</button>
-                    </div>
-                    <audio controls src="${aud.url}" style="margin-top:5px;"></audio>
+                        <div style="flex-grow: 1;"><span class="nome">${icone} ${fofo ? 'De:' : 'Por:'} <strong>${aud.nome}</strong></span><span style="display:block; font-size:11px; font-weight:normal; margin-top:2px;">${aud.data}</span></div>
+                        <button onclick="deletarMidia('${dbPath}', '${aud.id}', '${aud.url}', '${aud.nome}')" style="background:none; border:none; font-size:18px; cursor:pointer; color:#e74c3c; width:auto; padding:5px;">🗑️</button>
+                    </div><audio controls src="${aud.url}" style="margin-top:5px;"></audio>
                 </div>`;
             });
         }
 
-        // ==========================================
-        // FOTOS - UPLOAD E RENDERIZAÇÃO
-        // ==========================================
         async function subirFotoGaleria(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
+            const file = event.target.files[0]; if (!file) return;
             const nomeArquivo = `${Date.now()}_${usuarioLogado.replace(/[^a-zA-Z0-9]/g, '')}.jpg`;
-            
-            const divLoad = document.createElement('div');
-            divLoad.id = 'loading-foto';
-            divLoad.innerHTML = "<em style='color:#8e44ad; font-size:13px; font-weight:bold;'>⏳ Enviando (0%)...</em>";
-            document.getElementById('grade-fotos').prepend(divLoad);
-
+            const divLoad = document.createElement('div'); divLoad.id = 'loading-foto'; divLoad.innerHTML = "<em style='color:#8e44ad; font-size:13px; font-weight:bold;'>⏳ Enviando...</em>"; document.getElementById('grade-fotos').prepend(divLoad);
             const uploadTask = storage.ref(`fotos/${nomeArquivo}`).put(file);
 
             uploadTask.on('state_changed',
-                (snapshot) => {
-                    let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    document.getElementById('loading-foto').innerHTML = `<em style='color:#8e44ad; font-size:13px; font-weight:bold;'>⏳ Enviando (${Math.round(progress)}%)...</em>`;
-                },
-                (error) => {
-                    alert("Erro ao enviar foto: " + error.message);
-                    document.getElementById('loading-foto').remove();
-                },
-                () => {
-                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                        db.ref('muralFotos').push({
-                            nome: usuarioLogado,
-                            url: downloadURL,
-                            data: new Date().toLocaleDateString('pt-BR')
-                        });
-                        document.getElementById('loading-foto').remove();
-                    });
-                }
+                (snapshot) => { let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100; document.getElementById('loading-foto').innerHTML = `<em style='color:#8e44ad; font-size:13px; font-weight:bold;'>⏳ Enviando (${Math.round(progress)}%)...</em>`; },
+                (error) => { alert("Erro: " + error.message); document.getElementById('loading-foto').remove(); },
+                () => { uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => { db.ref('muralFotos').push({ nome: usuarioLogado, url: downloadURL, data: new Date().toLocaleDateString('pt-BR') }); document.getElementById('loading-foto').remove(); }); }
             );
             event.target.value = ''; 
         }
 
         function renderizarFotos(dados) {
-            const container = document.getElementById('grade-fotos');
-            container.innerHTML = '';
-            if (!dados) {
-                container.innerHTML = '<p style="color:#7f8c8d; font-size:13px; grid-column: 1 / -1; text-align:center;">Ainda não há fotos. Seja o primeiro a registrar um momento!</p>';
-                return;
-            }
-
+            const container = document.getElementById('grade-fotos'); container.innerHTML = '';
+            if (!dados) { container.innerHTML = '<p style="color:#7f8c8d; font-size:13px; grid-column: 1 / -1; text-align:center;">Ainda não há fotos.</p>'; return; }
             let fotos = Object.keys(dados).map(k => ({ id: k, ...dados[k] })).reverse(); 
-
             fotos.forEach(foto => {
                 container.innerHTML += `
                 <div class="cartao-foto">
-                    <button onclick="deletarMidia('muralFotos', '${foto.id}', '${foto.url}', '${foto.nome}')" style="position:absolute; top:5px; right:5px; background:rgba(255,255,255,0.85); border:none; border-radius:50%; cursor:pointer; font-size:14px; box-shadow:0 2px 4px rgba(0,0,0,0.3); width:30px; height:30px; display:flex; align-items:center; justify-content:center; z-index:10;" title="Apagar Foto">🗑️</button>
-                    <a href="${foto.url}" target="_blank">
-                        <img src="${foto.url}" alt="Foto com a Dona Arlinda">
-                    </a>
+                    <button onclick="deletarMidia('muralFotos', '${foto.id}', '${foto.url}', '${foto.nome}')" style="position:absolute; top:5px; right:5px; background:rgba(255,255,255,0.85); border:none; border-radius:50%; cursor:pointer; font-size:14px; box-shadow:0 2px 4px rgba(0,0,0,0.3); width:30px; height:30px; display:flex; align-items:center; justify-content:center; z-index:10;">🗑️</button>
+                    <a href="${foto.url}" target="_blank"><img src="${foto.url}"></a>
                     <div class="legenda-foto">📸 ${foto.nome}<br>${foto.data}</div>
                 </div>`;
             });
         }
 
-        // ==========================================
-        // RELATÓRIO
-        // ==========================================
         function abrirRelatorio() {
-            const corpo = document.getElementById('corpo-tabela-relatorio');
-            corpo.innerHTML = '';
+            const corpo = document.getElementById('corpo-tabela-relatorio'); corpo.innerHTML = '';
             diasAtivos.forEach(dia => {
-                let lista = bancoDeDadosNuvem[dia.idUnico] || [];
-                lista.sort((a, b) => converterParaMinutos(a.inicio) - converterParaMinutos(b.inicio));
+                let lista = bancoDeDadosNuvem[dia.idUnico] || []; lista.sort((a, b) => converterParaMinutos(a.inicio) - converterParaMinutos(b.inicio));
                 let txt = lista.length === 0 ? 'Livre' : lista.map(v => `${v.inicio}-${v.fim}: <strong>${v.nome}</strong>`).join('<br>');
                 corpo.innerHTML += `<tr><td><strong>${dia.tituloPrincipal}</strong><br><span style="font-size:12px">${dia.subTitulo}</span></td><td>${txt}</td></tr>`;
             });
             document.getElementById('obs-relatorio-texto').innerHTML = document.getElementById('texto-observacoes').value.replace(/\n/g, '<br>');
-            document.getElementById('tela-painel').style.display = 'none';
-            document.getElementById('tela-relatorio').style.display = 'block';
+            document.getElementById('tela-painel').style.display = 'none'; document.getElementById('tela-relatorio').style.display = 'block'; window.scrollTo(0,0);
         }
 
-        function fecharRelatorio() {
-            document.getElementById('tela-relatorio').style.display = 'none';
-            document.getElementById('tela-painel').style.display = 'block';
+        function fecharRelatorio() { document.getElementById('tela-relatorio').style.display = 'none'; document.getElementById('tela-painel').style.display = 'block'; window.scrollTo(0,0); }
+
+        // NOVAS FUNÇÕES PARA RELATÓRIOS ESPECÍFICOS
+        function abrirRelatorioAlimentacao() {
+            let idHoje = getIdHojeLocal();
+            document.getElementById('data-relatorio-alimentacao').innerText = document.getElementById('data-alimentacao-hoje').innerText;
+            
+            const refeicoes = { 'cafe': 'Café da Manhã', 'almoco': 'Almoço', 'tarde': 'Café da Tarde', 'janta': 'Janta' };
+            const corpo = document.getElementById('corpo-tabela-alimentacao');
+            corpo.innerHTML = '';
+            
+            db.ref('alimentacao/' + idHoje).once('value').then(snap => {
+                let dados = snap.val() || {};
+                Object.keys(refeicoes).forEach(coluna => {
+                    let itens = dados[coluna];
+                    let txt = '';
+                    if (itens) {
+                        txt = Object.values(itens).map(i => `• <strong>${i.texto}</strong> <em style="font-size:11px;color:#7f8c8d;">(${i.autor})</em>`).join('<br>');
+                    } else { txt = '<span style="color:#bdc3c7; font-style:italic;">Nenhum registro</span>'; }
+                    corpo.innerHTML += `<tr><td><strong>${refeicoes[coluna]}</strong></td><td>${txt}</td></tr>`;
+                });
+                
+                db.ref('geladeira/' + idHoje).once('value').then(snapG => {
+                    let dG = snapG.val() || {};
+                    let txtG = Object.values(dG).map(i => `• <strong>${i.texto}</strong>`).join('<br>') || '<span style="color:#bdc3c7; font-style:italic;">Nenhum item anotado</span>';
+                    document.getElementById('relatorio-geladeira').innerHTML = txtG;
+                });
+                db.ref('compras/' + idHoje).once('value').then(snapC => {
+                    let dC = snapC.val() || {};
+                    let txtC = Object.values(dC).map(i => `• <strong>${i.texto}</strong>`).join('<br>') || '<span style="color:#bdc3c7; font-style:italic;">Nenhum item anotado</span>';
+                    document.getElementById('relatorio-compras').innerHTML = txtC;
+                });
+
+                document.getElementById('aba-alimentacao').style.display = 'none';
+                document.getElementById('tela-relatorio-alimentacao').style.display = 'block';
+                window.scrollTo(0,0);
+            });
         }
 
+        function fecharRelatorioAlimentacao() {
+            document.getElementById('tela-relatorio-alimentacao').style.display = 'none';
+            document.getElementById('aba-alimentacao').style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function abrirRelatorioMedicacoes() {
+            let dataTexto = document.getElementById('data-medicacoes-tela').innerText.replace('\n', ' - ');
+            document.getElementById('data-relatorio-medicacoes').innerText = dataTexto;
+            let idDia = listenerMedicacaoAtual.split('/')[1];
+            
+            const corpo = document.getElementById('corpo-tabela-medicacoes');
+            corpo.innerHTML = '';
+
+            db.ref('medicacoes/' + idDia).once('value').then(snap => {
+                let dados = snap.val() || {};
+                if (Object.keys(dados).length === 0) {
+                    corpo.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#7f8c8d; padding:20px;">Nenhuma medicação registrada para este dia.</td></tr>`;
+                } else {
+                    Object.values(dados).forEach(m => {
+                        corpo.innerHTML += `<tr>
+                            <td><strong>${m.nome}</strong></td>
+                            <td style="color:#e67e22; font-weight:bold;">${m.dosagem}</td>
+                            <td style="color:#2980b9; font-weight:bold;">${m.horario}</td>
+                            <td style="font-size:12px; color:#7f8c8d;">${m.autor}</td>
+                        </tr>`;
+                    });
+                }
+                document.getElementById('aba-medicacoes').style.display = 'none';
+                document.getElementById('tela-relatorio-medicacoes').style.display = 'block';
+                window.scrollTo(0,0);
+            });
+        }
+
+        function fecharRelatorioMedicacoes() {
+            document.getElementById('tela-relatorio-medicacoes').style.display = 'none';
+            document.getElementById('aba-medicacoes').style.display = 'block';
+            window.scrollTo(0,0);
+        }
     </script>
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
-        }
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
     </script>
 </body>
 </html>
